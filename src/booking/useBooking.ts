@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { getBooking as get } from "../firebase";
+import { getBooking as get } from "@/firebase/booking";
 import type { Booking } from "../types";
 import { useMarket } from "@/MarketContext";
 

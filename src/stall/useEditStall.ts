@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { editStall as doEditStall } from "../firebase";
+import { editStall as doEditStall } from "@/firebase/stall";
 import type { Stall, StallParams } from "../types";
 
 export const useEditStall = (

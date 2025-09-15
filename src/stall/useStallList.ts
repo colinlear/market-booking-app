@@ -1,23 +1,24 @@
 import { useCallback, useEffect, useState } from "react";
 import type { Stall } from "../types";
-import { listStalls } from "../firebase";
+import { listStalls } from "@/firebase/stall";
 
 export const useStallList = () => {
   const [loading, setLoading] = useState(true);
   const [stalls, setStalls] = useState<Stall[]>();
 
-  const reloadStalls = useCallback(() => {
+  const reloadStalls = useCallback(async () => {
     setLoading(true);
-    listStalls()
-      .then((ret) => {
-        setStalls(ret);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const ret = await listStalls();
+      setStalls(ret);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  useEffect(() => reloadStalls, [reloadStalls]);
+  useEffect(() => {
+    reloadStalls();
+  }, [reloadStalls]);
 
   return { stalls, loading, reload: reloadStalls };
 };

@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
-import { applyStallStatus, createStall } from "../firebase";
+import { createStall } from "@/firebase/stall";
+import { applyStallStatus } from "@/firebase/stall-status";
 import type { Stall, StallParams } from "../types";
 import { useMarket } from "@/MarketContext";
 

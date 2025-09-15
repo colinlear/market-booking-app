@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { createBooking } from "../firebase";
+import { createBooking } from "@/firebase/booking";
 import type { Booking, Stall } from "../types";
 import { useMarket } from "@/MarketContext";
 
@@ -9,7 +9,7 @@ export const useAddBooking = (cb: (booking: Booking) => void) => {
   const [loading, setLoading] = useState(false);
 
   const addBooking = useCallback(
-    async (stall: Stall, date: string) => {
+    async (stall: Stall, cost: number, date: string) => {
       setBooking(undefined);
       setLoading(true);
       try {
@@ -18,6 +18,7 @@ export const useAddBooking = (cb: (booking: Booking) => void) => {
           status: "booked",
           stall,
           date,
+          cost,
           isPaid: false,
         });
         if (ret) {
@@ -47,6 +48,7 @@ export const useRebook = (
       const ret = await createBooking({
         marketCode: booking.marketCode,
         status: "booked",
+        cost: booking.cost,
         stall: booking.stall,
         date: booking.date,
         isPaid: booking.status == "credited",

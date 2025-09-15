@@ -1,4 +1,4 @@
-import { setMarket } from "@/firebase";
+import { setMarket } from "@/firebase/market";
 import type { Market } from "@/types";
 import { useCallback, useState } from "react";
 

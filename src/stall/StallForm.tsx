@@ -19,6 +19,7 @@ import { useEditStall } from "./useEditStall";
 import { useIsMarketAdmin, useMarket } from "@/MarketContext";
 import { LuFileUp, LuMinus, LuPlus } from "react-icons/lu";
 import { GoDot, GoPlus } from "react-icons/go";
+import { auth } from "@/firebase/firebase";
 
 export const StallForm: FC<{
   stall?: Stall;
@@ -29,6 +30,13 @@ export const StallForm: FC<{
 
   const { addStall, loading } = useAddStall(onSave);
   const { editStall, loading: editLoading } = useEditStall(stall, onSave);
+
+  const [email, setEmail] = useState(
+    stall?.email ?? !isAdmin ? auth.currentUser?.email ?? "" : ""
+  );
+  const [phone, setPhone] = useState(
+    stall?.phone ?? !isAdmin ? auth.currentUser?.phoneNumber ?? "" : ""
+  );
 
   const [name, setName] = useState(stall?.name ?? "");
   const [description, setDesc] = useState(stall?.description ?? "");
@@ -63,8 +71,31 @@ export const StallForm: FC<{
           value={description}
           placeholder="Stall Description"
           onChange={(e) => setDesc(e.currentTarget.value)}
+          rows={5}
         />
       </Field.Root>
+      {isAdmin && (
+        <Field.Root>
+          <Field.Label>Email</Field.Label>
+          <Input
+            type="email"
+            value={email}
+            placeholder="Email Address"
+            onChange={(e) => setEmail(e.currentTarget.value)}
+          />
+        </Field.Root>
+      )}
+      {isAdmin && (
+        <Field.Root>
+          <Field.Label>Phone</Field.Label>
+          <Input
+            type="tel"
+            value={phone}
+            placeholder="Phone Number"
+            onChange={(e) => setPhone(e.currentTarget.value)}
+          />
+        </Field.Root>
+      )}
 
       <Field.Root>
         <Field.Label>Stall Size</Field.Label>
@@ -259,9 +290,11 @@ export const StallForm: FC<{
         variant="solid"
         loading={loading || editLoading}
         onClick={() => {
-          if (stall) {
+          if (stall && email.trim()) {
             editStall({
               ...stall,
+              email,
+              phone,
               name,
               description,
               products,
@@ -272,6 +305,8 @@ export const StallForm: FC<{
             });
           } else {
             addStall({
+              email,
+              phone,
               name,
               description,
               products,

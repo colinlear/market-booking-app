@@ -3,7 +3,7 @@ import { auth as authui } from "firebaseui";
 import { EmailAuthProvider, onAuthStateChanged } from "firebase/auth";
 import { Box, ProgressCircle } from "@chakra-ui/react";
 
-import { auth } from "./firebase";
+import { auth } from "./firebase/firebase";
 
 import "firebaseui/dist/firebaseui.css";
 

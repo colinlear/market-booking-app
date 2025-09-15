@@ -12,6 +12,8 @@ export interface Market {
 
 export interface Stall {
   id: string;
+  email: string;
+  phone?: string;
   name: string;
   description: string;
   products: string[];
@@ -48,6 +50,7 @@ export interface Booking {
   marketCode: string;
   stall: Stall;
   date: string;
+  cost: number;
   isPaid: boolean;
   status: "booked" | "cancelled" | "credited";
   paymentId?: string;

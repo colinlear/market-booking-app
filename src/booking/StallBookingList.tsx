@@ -39,7 +39,9 @@ export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
     <Stack direction="row" gap={2} alignItems="center">
       <Box flex="0 0 6rem">{booking.date}</Box>
       <Box flex="1" display="flex" justifyContent="flex-end">
-        {booking.status == "credited" ? (
+        {booking.cost <= 0 ? (
+          <Box color="blue.700">Free</Box>
+        ) : booking.status == "credited" ? (
           <Box color="red.500">Cancelled with refund</Box>
         ) : booking.status == "cancelled" ? (
           <Box color="red.500">Cancelled</Box>

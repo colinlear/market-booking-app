@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { listBookings } from "../firebase";
+import { listBookings } from "@/firebase/booking";
 import type { Booking } from "../types";
 import { format } from "date-fns/format";
 import { useMarket } from "@/MarketContext";

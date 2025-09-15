@@ -5,7 +5,8 @@ import {
   useEffect,
   useState,
 } from "react";
-import { auth, listMarkets } from "./firebase";
+import { auth } from "./firebase/firebase";
+import { listMarkets } from "./firebase/market";
 import type { Market } from "./types";
 
 export interface MarketContextProps {
@@ -38,22 +39,23 @@ export const useListMarkets = () => {
   const [loading, setLoading] = useState(true);
   const [markets, setMarkets] = useState<Record<string, Market>>();
 
-  const reloadMarkets = useCallback(() => {
+  const reloadMarkets = useCallback(async () => {
     setLoading(true);
-    listMarkets()
-      .then((ret) => {
-        const list: Record<string, Market> = {};
-        for (const m of ret) {
-          list[m.code] = m;
-        }
-        setMarkets(list);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    try {
+      const ret = await listMarkets();
+      const list: Record<string, Market> = {};
+      for (const m of ret) {
+        list[m.code] = m;
+      }
+      setMarkets(list);
+    } finally {
+      setLoading(false);
+    }
   }, []);
 
-  useEffect(() => reloadMarkets, [reloadMarkets]);
+  useEffect(() => {
+    reloadMarkets();
+  }, [reloadMarkets]);
 
   return { markets, loading, reload: reloadMarkets };
 };

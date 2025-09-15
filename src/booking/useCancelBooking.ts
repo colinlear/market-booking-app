@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { cancelBooking as cancel } from "../firebase";
+import { cancelBooking as cancel } from "@/firebase/booking";
 import type { Booking } from "../types";
 import { today } from "@/common/dates";
 

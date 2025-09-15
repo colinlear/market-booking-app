@@ -7,11 +7,17 @@ import { useCancelBooking } from "./useCancelBooking";
 import { useBooking } from "./useBooking";
 import { useMarket } from "@/MarketContext";
 import { today } from "@/common/dates";
+import { useStallStatus } from "@/stall/useMarketStatus";
+import { LoadingPage } from "@/common/loading";
 
 export const AvailableBookingList: FC<{
   stall: Stall;
 }> = ({ stall }) => {
   const { dates } = useMarket();
+  const { stallStatus, loading } = useStallStatus(stall.id);
+
+  if (loading) return <LoadingPage />;
+  if (!stallStatus) return null;
 
   return (
     <>
@@ -19,15 +25,21 @@ export const AvailableBookingList: FC<{
         {dates
           .filter((dt) => dt >= today())
           .map((dt) => (
-            <BookingDate key={dt} stall={stall} date={dt} />
+            <BookingDate
+              key={dt}
+              stall={stall}
+              cost={stallStatus?.bookingCost}
+              date={dt}
+            />
           ))}
       </Stack>
     </>
   );
 };
 
-export const BookingDate: FC<{ stall: Stall; date: string }> = ({
+export const BookingDate: FC<{ stall: Stall; cost: number; date: string }> = ({
   stall,
+  cost,
   date,
 }) => {
   const { booking, loading, reload } = useBooking(stall.id, date);
@@ -43,7 +55,13 @@ export const BookingDate: FC<{ stall: Stall; date: string }> = ({
         <Stack direction="row" gap={2} alignItems="center">
           <Box flex="0 0 6rem">{date}</Box>
           <Box flex={1} display="flex" justifyContent="flex-end">
-            {booking.isPaid ? <Box color="green.600">Paid</Box> : "Unpaid"}
+            {booking.cost <= 0 ? (
+              <Box color="blue.600">Free</Box>
+            ) : booking.isPaid ? (
+              <Box color="green.600">Paid</Box>
+            ) : (
+              "Unpaid"
+            )}
           </Box>
           <Box flex="0 0 5rem" display="flex" justifyContent="flex-end">
             <Button
@@ -91,7 +109,7 @@ export const BookingDate: FC<{ stall: Stall; date: string }> = ({
               variant="solid"
               loading={addLoading}
               onClick={() => {
-                addBooking(stall, date);
+                addBooking(stall, cost, date);
               }}
             >
               Book

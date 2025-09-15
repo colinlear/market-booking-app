@@ -1,14 +1,14 @@
-import { listMarketBookings } from "@/firebase";
+import { listMarketBookings } from "@/firebase/booking";
 import { useMarket } from "@/MarketContext";
 import type { Booking } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 
 export const useMarketBookings = (date?: string) => {
   const market = useMarket();
-  const [stalls, setStalls] = useState<Booking[]>();
+  const [bookings, setBookings] = useState<Booking[]>();
   const [loading, setLoading] = useState(true);
 
-  const reloadStalls = useCallback(async () => {
+  const reloadBookings = useCallback(async () => {
     if (!date) return;
     setLoading(true);
     try {
@@ -22,15 +22,15 @@ export const useMarketBookings = (date?: string) => {
           ? -1
           : 1
       );
-      setStalls(ret);
+      setBookings(ret);
     } finally {
       setLoading(false);
     }
   }, [market, date]);
 
   useEffect(() => {
-    reloadStalls();
-  }, [reloadStalls]);
+    reloadBookings();
+  }, [reloadBookings]);
 
-  return { stalls, loading, reloadStalls };
+  return { bookings, loading, reloadBookings };
 };

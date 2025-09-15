@@ -1,6 +1,14 @@
 import type { FC } from "react";
 import { useNavigate, useParams } from "react-router";
-import { Box, Button, Heading, HStack, Tag } from "@chakra-ui/react";
+import {
+  Box,
+  Button,
+  Heading,
+  HStack,
+  Icon,
+  Link,
+  Tag,
+} from "@chakra-ui/react";
 import { HiCheck } from "react-icons/hi";
 
 import { AvailableBookingList } from "@/booking/AvailableBookingList";
@@ -8,6 +16,7 @@ import { useIsMarketAdmin, useMarket } from "@/MarketContext";
 import { StallManagerForm } from "@/stall/StallManagerForm";
 import { useStallStatus } from "@/stall/useMarketStatus";
 import { useStall } from "@/stall/useStall";
+import { LuMail, LuPhone } from "react-icons/lu";
 
 export const StallRoute: FC = () => {
   const navigate = useNavigate();
@@ -61,6 +70,34 @@ export const StallRoute: FC = () => {
             ""
           )}
         </Heading>
+        <HStack gap={2} justifyContent="space-between" mb={2}>
+          {!!stall?.email?.trim() && (
+            <Link
+              variant="underline"
+              colorPalette="blue"
+              href={`mailto:${stall?.email}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Icon>
+                <LuMail />
+              </Icon>
+              {stall?.email}
+            </Link>
+          )}
+          {!!stall?.phone?.trim() && (
+            <Link
+              variant="underline"
+              colorPalette="blue"
+              href={`tel:${stall?.phone}`}
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Icon>
+                <LuPhone />
+              </Icon>
+              {stall?.phone}
+            </Link>
+          )}
+        </HStack>
 
         <Box whiteSpace="pre" mb={2}>
           {stall?.description}
@@ -77,14 +114,14 @@ export const StallRoute: FC = () => {
           </Box>
         )}
         {!!stall?.size && <Heading size="sm">Size: {stall?.size}</Heading>}
-        {(stall?.requiresPower || stall?.requiresTent) && (
+        {(stall?.requiresPower || !!stall?.requiresTent) && (
           <Heading size="sm" mb={2}>
             Requires: {stall?.requiresPower && "Power"}{" "}
             {stall?.requiresPower && stall?.requiresTent > 0 && " & "}
             {stall?.requiresTent > 0 &&
               `${
                 stall.requiresTent == 1
-                  ? "one tent"
+                  ? "a tent"
                   : `${stall.requiresTent} tents`
               }`}
           </Heading>

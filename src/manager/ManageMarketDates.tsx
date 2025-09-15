@@ -18,6 +18,7 @@ import { addDays, addMonths, format, startOfWeek } from "date-fns";
 import { useEditMarket } from "./useEditMarket";
 import { useNavigate } from "react-router";
 import { HiCalendar } from "react-icons/hi";
+import type { Booking } from "@/types";
 
 export const ManageMarketDates: FC = () => {
   const navigate = useNavigate();
@@ -202,10 +203,11 @@ export const AddDatesDialog: FC<{
   );
 };
 
-export const DeleteMarketButton: FC<{ date: string; onDone?: () => void }> = ({
-  date,
-  onDone,
-}) => {
+export const DeleteMarketButton: FC<{
+  date: string;
+  bookings?: Booking[];
+  onDone?: () => void;
+}> = ({ date, bookings, onDone }) => {
   const market = useMarket();
   const reloadMarket = useReloadMarket();
   const { editMarket, loading } = useEditMarket(() => {
@@ -213,9 +215,19 @@ export const DeleteMarketButton: FC<{ date: string; onDone?: () => void }> = ({
     onDone?.();
   });
 
+  const activeBookings = useMemo(() => {
+    if (!bookings) return undefined;
+    let ret = 0;
+    for (const s of bookings) {
+      if (s.status == "booked") ret++;
+    }
+    return ret;
+  }, [bookings]);
+
   return (
     <Button
       colorPalette="red"
+      disabled={activeBookings == null || activeBookings > 0}
       loading={loading}
       onClick={() => {
         editMarket({
