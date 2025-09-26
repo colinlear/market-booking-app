@@ -67,15 +67,3 @@ export default tseslint.config([
   },
 ]);
 ```
-
-#Market Config
-
-```
-{
-  code: "VicPark",
-  name: "Victoria Park Farmers Market",
-  description: "",
-  logo: "https://static.wixstatic.com/media/9f65a6_dfc0508b39824d8f900bd54477acdf2e~mv2.png/v1/fill/w_258,h_258,al_c,q_85,usm_0.66_1.00_0.01,enc_avif,quality_auto/Vic%20Park%20Market.png",
-  dates: [],
-}
-```
