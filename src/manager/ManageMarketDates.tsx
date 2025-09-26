@@ -19,6 +19,7 @@ import { useEditMarket } from "./useEditMarket";
 import { useNavigate } from "react-router";
 import { HiCalendar } from "react-icons/hi";
 import type { Booking } from "@/types";
+import { SubHeader } from "@/common/subheader";
 
 export const ManageMarketDates: FC = () => {
   const navigate = useNavigate();
@@ -39,20 +40,23 @@ export const ManageMarketDates: FC = () => {
 
   return (
     <>
-      <HStack mb={3}>
-        <Heading size="md" flex={1}>
-          Market Dates:
-        </Heading>
-        <AddDatesDialog
-          onChange={async (dates) => {
-            const olddates = new Set(market.dates);
-            for (const dt of dates) {
-              olddates.add(dt);
-            }
-            editMarket({ ...market, dates: [...olddates].sort() });
-          }}
-        />
-      </HStack>
+      <SubHeader>
+        <HStack>
+          <Heading size="md" flex={1}>
+            Market Dates:
+          </Heading>
+          <AddDatesDialog
+            onChange={async (dates) => {
+              const olddates = new Set(market.dates);
+              for (const dt of dates) {
+                olddates.add(dt);
+              }
+              editMarket({ ...market, dates: [...olddates].sort() });
+            }}
+          />
+        </HStack>
+      </SubHeader>
+
       {Object.keys(groupDates)
         .sort()
         .map(
@@ -223,6 +227,8 @@ export const DeleteMarketButton: FC<{
     }
     return ret;
   }, [bookings]);
+
+  if (activeBookings == null || activeBookings > 0) return null;
 
   return (
     <Button

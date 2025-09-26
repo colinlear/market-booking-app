@@ -37,7 +37,7 @@ export const ManageStallsRoute: FC = () => {
         left={0}
         right={0}
         height={14}
-        background="white"
+        background="bg.panel"
         p={2}
         alignItems="center"
       >

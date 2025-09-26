@@ -264,19 +264,27 @@ export const StallForm: FC<{
           >
             <HStack gap="2">
               <NumberInput.DecrementTrigger asChild>
-                <IconButton variant="outline" size="sm" backgroundColor="white">
+                <IconButton
+                  variant="outline"
+                  size="sm"
+                  backgroundColor="bg.panel"
+                >
                   <LuMinus />
                 </IconButton>
               </NumberInput.DecrementTrigger>
               <NumberInput.Input
                 textAlign="center"
-                backgroundColor="white"
+                backgroundColor="bg.panel"
                 maxW="3rem"
                 fontSize="lg"
               />
 
               <NumberInput.IncrementTrigger asChild>
-                <IconButton variant="outline" size="sm" backgroundColor="white">
+                <IconButton
+                  variant="outline"
+                  size="sm"
+                  backgroundColor="bg.panel"
+                >
                   <LuPlus />
                 </IconButton>
               </NumberInput.IncrementTrigger>

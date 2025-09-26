@@ -13,6 +13,7 @@ import { useCancelBooking } from "@/booking/useCancelBooking";
 import { Link } from "react-router";
 import { useMarket } from "@/MarketContext";
 import { LuMail, LuPhone } from "react-icons/lu";
+import { BookingPaymentDialog } from "./BookingPaymentDialog";
 
 export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
   booking,
@@ -36,14 +37,14 @@ export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
       }}
     >
       <HStack gap={2} alignItems="center">
-        <Box flex="0 0 6rem">
+        <Box flex={1}>
           <LinkTo asChild variant="underline">
             <Link to={`/${market.code}/stall/${booking.stall.id}`}>
               {booking.stall.name}
             </Link>
           </LinkTo>
         </Box>
-        <Box flex="1" display="flex" justifyContent="flex-end">
+        <Box display="flex" justifyContent="flex-end">
           {booking.cost <= 0 ? (
             <Box color="blue.700">Free</Box>
           ) : booking.status == "credited" ? (
@@ -54,33 +55,6 @@ export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
             <Box color="green.700">Paid</Box>
           ) : (
             "Unpaid"
-          )}
-        </Box>
-
-        <Box flex="0 0 5rem">
-          {booking.status == "booked" && (
-            <Button
-              colorPalette="red"
-              variant="solid"
-              loading={cancelLoading}
-              onClick={() => {
-                cancelBooking(booking);
-              }}
-            >
-              Cancel
-            </Button>
-          )}
-          {(booking.status == "cancelled" || booking.status == "credited") && (
-            <Button
-              colorPalette="teal"
-              variant="solid"
-              loading={rebookLoading}
-              onClick={() => {
-                rebook();
-              }}
-            >
-              Rebook
-            </Button>
           )}
         </Box>
       </HStack>
@@ -111,6 +85,40 @@ export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
             {booking.stall.phone}
           </LinkTo>
         )}
+      </HStack>
+      <HStack>
+        {booking.status == "booked" && !booking.isPaid && booking.cost > 0 && (
+          <BookingPaymentDialog booking={booking} onDone={() => reload()} />
+        )}
+        <Box flex={1} />
+        <Box>
+          {booking.status == "booked" && (
+            <Button
+              size="xs"
+              colorPalette="red"
+              variant="solid"
+              loading={cancelLoading}
+              onClick={() => {
+                cancelBooking(booking);
+              }}
+            >
+              Cancel
+            </Button>
+          )}
+          {(booking.status == "cancelled" || booking.status == "credited") && (
+            <Button
+              size="xs"
+              colorPalette="teal"
+              variant="solid"
+              loading={rebookLoading}
+              onClick={() => {
+                rebook();
+              }}
+            >
+              Rebook
+            </Button>
+          )}
+        </Box>
       </HStack>
     </Stack>
   );

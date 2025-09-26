@@ -146,7 +146,10 @@ export const StallRoute: FC = () => {
         <Box
           marginBottom={2}
           borderRadius={6}
-          backgroundColor="rgba(248, 226, 184, 1)"
+          backgroundColor="yellow.500"
+          _dark={{
+            backgroundColor: "orange.700",
+          }}
           p={2}
         >
           <StallManagerForm

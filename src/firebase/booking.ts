@@ -92,3 +92,17 @@ export const cancelBooking = async (booking: Booking, refund = false) => {
     });
   });
 };
+
+export const payBooking = async (
+  booking: Booking,
+  paid: number,
+  paymentId: string
+) => {
+  await runTransaction(data, async (transaction) => {
+    transaction.update(doc(collection(data, bookingCollection), booking.id), {
+      isPaid: true,
+      cost: paid,
+      paymentId,
+    });
+  });
+};

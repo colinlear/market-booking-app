@@ -10,6 +10,7 @@ import { ManageDateRoute } from "./routes/manage-date";
 import { ManageStallsRoute } from "./routes/manage-stalls";
 import { AddStallRoute } from "./routes/stall-add";
 import { EditStallRoute } from "./routes/stall-edit";
+import { Toaster } from "./components/ui/toaster";
 
 const router = createBrowserRouter([
   { path: "", Component: NotFound },
@@ -53,6 +54,7 @@ function App() {
   return (
     <Auth>
       <RouterProvider router={router} />
+      <Toaster />
     </Auth>
   );
 }

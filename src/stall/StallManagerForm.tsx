@@ -39,7 +39,7 @@ export const StallManagerForm: FC<{
         <NativeSelect.Root>
           <NativeSelect.Field
             value={newStatus}
-            backgroundColor="#fff"
+            backgroundColor="bg.panel"
             onChange={(e) => setNewStatus(e.target.value as StallStatusValues)}
           >
             <option value="pending">Pending</option>
@@ -71,19 +71,27 @@ export const StallManagerForm: FC<{
           >
             <HStack gap="2">
               <NumberInput.DecrementTrigger asChild>
-                <IconButton variant="outline" size="sm" backgroundColor="white">
+                <IconButton
+                  variant="outline"
+                  size="sm"
+                  backgroundColor="bg.panel"
+                >
                   <LuMinus />
                 </IconButton>
               </NumberInput.DecrementTrigger>
               <NumberInput.Input
                 textAlign="center"
-                backgroundColor="white"
+                backgroundColor="bg.panel"
                 maxW="6rem"
                 fontSize="lg"
                 p={1}
               />
               <NumberInput.IncrementTrigger asChild>
-                <IconButton variant="outline" size="sm" backgroundColor="white">
+                <IconButton
+                  variant="outline"
+                  size="sm"
+                  backgroundColor="bg.panel"
+                >
                   <LuPlus />
                 </IconButton>
               </NumberInput.IncrementTrigger>
