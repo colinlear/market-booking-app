@@ -21,14 +21,13 @@ export const listStalls = async () => {
       )
     );
     const ret: Stall[] = [];
-    console.debug("List Stalls", querySnapshot);
     querySnapshot.forEach((doc) => {
       ret.push({
         id: doc.id,
         ...doc.data(),
       } as Stall);
     });
-    console.debug("Stalls", ret);
+    // console.debug("Stalls", ret);
     return ret;
   } catch (e) {
     console.error("ListStalls Error:", e);
@@ -41,14 +40,13 @@ export const getStalls = async (stallIds: string[]) => {
     query(collection(data, stallCollection), where("__name__", "in", stallIds))
   );
   const ret: Stall[] = [];
-  console.debug("Query", querySnapshot);
   querySnapshot.forEach((doc) => {
     ret.push({
       id: doc.id,
       ...doc.data(),
     } as Stall);
   });
-  console.debug("Stalls", ret);
+  // console.debug("Stalls", ret);
   return ret;
 };
 
@@ -60,7 +58,7 @@ export const getStall = async (stallId: string) => {
     id: docSnapshot.id,
     ...docSnapshot.data(),
   } as Stall;
-  console.debug("Stall", ret);
+  // console.debug("Stall", ret);
   return ret;
 };
 

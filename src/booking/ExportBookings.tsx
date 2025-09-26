@@ -28,8 +28,6 @@ export const ExportBookingsDialog: FC<{
         b.cost <= 0 ? "free" : b.isPaid ? "paid" : "unpaid",
       ])
     );
-    console.debug("CSV", ret);
-    console.debug("base64 csv", btoa(ret));
     return ret;
   }, [bookings]);
 

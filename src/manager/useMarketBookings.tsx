@@ -13,7 +13,6 @@ export const useMarketBookings = (date?: string) => {
     setLoading(true);
     try {
       const ret = await listMarketBookings(market.code, date);
-      console.debug("Booking List", ret);
       // sort by booked/cancelled and name
       ret.sort((a, b) =>
         a.status == b.status

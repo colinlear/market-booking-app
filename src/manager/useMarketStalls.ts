@@ -17,10 +17,8 @@ export const useMarketStalls = () => {
     setLoading(true);
     try {
       const statuses = await listMarketStallStatuses(market.code);
-      console.debug("Stall Statuses", statuses);
       const stallIds = statuses.map((s) => s.stallId);
       const stalls = await getStalls(stallIds);
-      console.debug("Stall Statuses", stalls);
       const stallIdx: Record<string, Stall> = {};
       for (const s of stalls) {
         stallIdx[s.id] = s;
@@ -35,7 +33,6 @@ export const useMarketStalls = () => {
         }
       }
       ret.sort((a, b) => a.name.localeCompare(b.name));
-      console.debug("Stall Ret", ret);
 
       setStalls(ret);
     } finally {

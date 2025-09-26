@@ -14,11 +14,10 @@ export const listMarkets = async (): Promise<Market[]> => {
     query(collection(data, marketCollection))
   );
   const ret: Market[] = [];
-  console.debug("Query", querySnapshot);
   querySnapshot.forEach((doc) => {
     ret.push(doc.data() as Market);
   });
-  console.debug("Markets", ret);
+  // console.debug("Markets", ret);
   return ret;
 };
 

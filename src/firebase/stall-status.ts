@@ -18,14 +18,13 @@ export const listMarketStallStatuses = async (marketCode: string) => {
     )
   );
   const ret: StallStatus[] = [];
-  console.debug("Query", querySnapshot);
   querySnapshot.forEach((doc) => {
     ret.push({
       id: doc.id,
       ...doc.data(),
     } as StallStatus);
   });
-  console.debug("MarketStatus", ret);
+  // console.debug("MarketStatus", ret);
   return ret;
 };
 
@@ -37,14 +36,13 @@ export const listStallStatuses = async () => {
     )
   );
   const ret: StallStatus[] = [];
-  console.debug("Query", querySnapshot);
   querySnapshot.forEach((doc) => {
     ret.push({
       id: doc.id,
       ...doc.data(),
     } as StallStatus);
   });
-  console.debug("MarketStatus", ret);
+  // console.debug("MarketStatus", ret);
   return ret;
 };
 
@@ -53,7 +51,7 @@ export const getStallStatus = async (market: string, stallId: string) => {
     doc(collection(data, stallStatusCollection), `${market}-${stallId}`)
   );
   const ret = querySnapshot.data();
-  console.debug("Stall Status", market, stallId, ret);
+  // console.debug("Stall Status", market, stallId, ret);
   return ret as StallStatus;
 };
 

@@ -1,10 +1,13 @@
 import type { Market } from "@/types";
 import {
+  Box,
   Button,
+  CloseButton,
   Field,
   HStack,
   IconButton,
   Input,
+  InputGroup,
   NumberInput,
   Stack,
   Textarea,
@@ -13,6 +16,7 @@ import { useState, type FC } from "react";
 import { useEditMarket } from "./useEditMarket";
 import { LuMinus, LuPlus } from "react-icons/lu";
 import { BottomBar } from "@/common/bottom-bar";
+import { GoDot, GoPlus } from "react-icons/go";
 
 export const MarketForm: FC<{
   market?: Market;
@@ -25,6 +29,8 @@ export const MarketForm: FC<{
   const [stallCost, setStallCost] = useState(market?.stallCost ?? 0);
   const [powerCost, setPowerCost] = useState(market?.powerCost ?? 0);
   const [tentCost, setTentCost] = useState(market?.tentCost ?? 0);
+  const [admins, setAdmins] = useState(market?.admins ?? []);
+  const [newAdmin, setNewAdmin] = useState("");
 
   const { editMarket, loading } = useEditMarket((m) => {
     onSave(m);
@@ -93,7 +99,6 @@ export const MarketForm: FC<{
             currencySign: "accounting",
           }}
           onValueChange={(e) => {
-            console.debug("Edit Stall Cost", e.valueAsNumber);
             setStallCost(e.valueAsNumber);
           }}
         >
@@ -196,6 +201,53 @@ export const MarketForm: FC<{
           The cost to rent a gazebo from the market. O to disable.
         </Field.HelperText>
       </Field.Root>
+      <Field.Root invalid={admins.includes(newAdmin.trim())}>
+        <Field.Label>Product(s)</Field.Label>
+        <Stack pl={2} width="100%">
+          {admins.sort().map((p) => (
+            <HStack>
+              <GoDot />
+              <Box flex={1}>{p}</Box>
+              <CloseButton
+                size="xs"
+                onClick={() =>
+                  setAdmins((prev) => prev.filter((pn) => pn != p))
+                }
+              />
+            </HStack>
+          ))}
+        </Stack>
+        <InputGroup
+          endAddon={
+            <IconButton
+              variant="plain"
+              onClick={() => {
+                if (newAdmin.trim() && !admins.includes(newAdmin.trim())) {
+                  setAdmins((p) => [...p, newAdmin.trim()]);
+                  setNewAdmin("");
+                }
+              }}
+            >
+              <GoPlus />
+            </IconButton>
+          }
+        >
+          <Input
+            value={newAdmin}
+            onChange={(e) => setNewAdmin(e.currentTarget.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                if (newAdmin.trim() && !admins.includes(newAdmin.trim())) {
+                  setAdmins((p) => [...p, newAdmin.trim()]);
+                  setNewAdmin("");
+                  e.preventDefault();
+                  e.stopPropagation();
+                }
+              }
+            }}
+          />
+        </InputGroup>
+      </Field.Root>
       <BottomBar>
         <Button
           width="100%"
@@ -210,7 +262,7 @@ export const MarketForm: FC<{
               description,
               logo,
               dates: market?.dates ?? [],
-              admins: market?.admins ?? [],
+              admins,
               stallCost,
               powerCost,
               tentCost,

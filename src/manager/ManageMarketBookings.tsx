@@ -46,7 +46,7 @@ export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
         <Box>
           {!!booking.stall.requiresPower && (
             <Tooltip content="Requires Power">
-              <Icon>
+              <Icon size="lg">
                 <BsLightningChargeFill />
               </Icon>
             </Tooltip>
@@ -63,7 +63,7 @@ export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
                 {booking.stall.requiresTent > 1
                   ? `${booking.stall.requiresTent} x`
                   : ""}
-                <Icon>
+                <Icon size="lg">
                   <PiTent />
                 </Icon>
               </span>

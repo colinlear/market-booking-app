@@ -25,7 +25,7 @@ export const Auth: FC<PropsWithChildren> = ({ children }) => {
     ui.start("#firebaseui-auth-container", {
       callbacks: {
         signInSuccessWithAuthResult: (authResult) => {
-          console.debug("Auth Result", authResult);
+          // console.debug("Auth Result", authResult);
           setIsSignedIn(!!authResult);
           return false;
         },

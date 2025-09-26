@@ -32,8 +32,6 @@ export const FoodStallRequirements: FC<{
     return null;
   }
 
-  console.debug("Expires", expires, expireDate);
-
   return (
     <Stack gap={2} mt={4}>
       {stall.foodBusinessCert?.trim ? (

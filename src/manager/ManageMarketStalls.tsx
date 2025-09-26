@@ -31,7 +31,6 @@ export const ManageMarketStalls: FC<{ status: StatusFilter }> = ({
         : stalls?.filter((s) => s.status.status == status);
 
     if (filterName.trim()) {
-      console.debug("Filter by name", filterName);
       ret = ret?.filter(({ name }) =>
         name.toLowerCase().includes(filterName.trim().toLowerCase())
       );
@@ -45,7 +44,6 @@ export const ManageMarketStalls: FC<{ status: StatusFilter }> = ({
         <Input
           placeholder="Search Stalls"
           onInput={(e) => {
-            console.debug("Searching", e.currentTarget.value);
             setFilterName(e.currentTarget.value);
           }}
         />

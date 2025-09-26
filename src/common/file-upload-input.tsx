@@ -19,14 +19,14 @@ export const FileUploadInput: FC<
           const storage = getStorage();
           const file = e.target.files?.[0];
 
-          console.debug("File", file);
+          // console.debug("File", file);
           if (file?.name) {
             setUploading(true);
             try {
               const ext = file.name.split(".").pop();
               const fileRef = ref(storage, `${filepath}.${ext}`);
               const ret = await uploadBytes(fileRef, file);
-              console.debug("Cloud File", ret.ref.fullPath);
+              // console.debug("Cloud File", ret.ref.fullPath);
               onChange(ret.ref.fullPath);
               setFilename(file.name);
             } finally {

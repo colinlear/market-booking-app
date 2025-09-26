@@ -26,7 +26,7 @@ export const listMarketBookings = async (marketCode: string, date: string) => {
       ...doc.data(),
     } as Booking);
   });
-  console.debug("Bookings", ret);
+  // console.debug("Bookings", ret);
   ret.sort((a, b) => a.date.localeCompare(b.date));
   return ret;
 };
@@ -74,7 +74,7 @@ export const getBooking = async (
 };
 
 export const createBooking = async (booking: BookingParams) => {
-  const ref = await setDoc(
+  await setDoc(
     doc(
       collection(data, bookingCollection),
       `${booking.marketCode}-${booking.stall.id}-${booking.date}`
@@ -84,7 +84,6 @@ export const createBooking = async (booking: BookingParams) => {
       uid: auth.currentUser?.uid,
     }
   );
-  console.debug(ref);
   return {
     id: `${booking.marketCode}-${booking.stall.id}-${booking.date}`,
     ...booking,

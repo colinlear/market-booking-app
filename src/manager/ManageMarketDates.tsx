@@ -183,13 +183,11 @@ export const AddDatesDialog: FC<{
 
                     const start = addDays(startOfWeek(sd), parseInt(weekday));
                     let ld = start > sd ? start : addDays(start, 7);
-                    console.debug("Start Date", ld);
                     do {
                       ret.push(format(ld, "yyyy-MM-dd"));
                       ld = addDays(ld, 7);
-                      console.debug("Next Date", ld);
                     } while (ld < ed);
-                    console.debug("Dates", ret);
+                    // console.debug("Dates", ret);
                     await onChange(ret);
                     setOpen(false);
                   }
