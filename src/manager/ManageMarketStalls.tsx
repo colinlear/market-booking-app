@@ -40,7 +40,7 @@ export const ManageMarketStalls: FC<{ status: StatusFilter }> = ({
   }, [stalls, status, filterName]);
 
   return (
-    <Stack gap={2}>
+    <Stack gap={2} maxWidth="30rem">
       <InputGroup startElement={<HiSearch />}>
         <Input
           placeholder="Search Stalls"

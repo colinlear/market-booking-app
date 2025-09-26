@@ -2,10 +2,11 @@ import { useCallback, useState } from "react";
 import { createStall } from "@/firebase/stall";
 import { applyStallStatus } from "@/firebase/stall-status";
 import type { Stall, StallParams } from "../types";
-import { useMarket } from "@/MarketContext";
+import { useIsMarketAdmin, useMarket } from "@/MarketContext";
 
 export const useAddStall = (cb: (stall: Stall) => void) => {
   const market = useMarket();
+  const isMarketAdmin = useIsMarketAdmin();
   const [stall, setStall] = useState<Stall>();
   const [loading, setLoading] = useState(false);
   const addStall = useCallback(
@@ -13,7 +14,10 @@ export const useAddStall = (cb: (stall: Stall) => void) => {
       setStall(undefined);
       setLoading(true);
       try {
-        const ret = await createStall(stall);
+        const ret = await createStall({
+          ...stall,
+          marketCode: isMarketAdmin ? market.code : undefined,
+        });
         if (ret) {
           await applyStallStatus({
             marketCode: market.code,
@@ -22,11 +26,13 @@ export const useAddStall = (cb: (stall: Stall) => void) => {
           setStall(ret);
           cb(ret);
         }
+      } catch (e) {
+        console.error(e);
       } finally {
         setLoading(false);
       }
     },
-    [cb, market]
+    [cb, market, isMarketAdmin]
   );
 
   return { stall, addStall, loading };

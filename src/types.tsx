@@ -12,6 +12,7 @@ export interface Market {
 
 export interface Stall {
   id: string;
+  marketCode?: string; // only for market managed stalls...
   email: string;
   phone?: string;
   name: string;
@@ -19,6 +20,8 @@ export interface Stall {
   products: string[];
   size: string;
   isFoodStall: boolean;
+  foodBusinessCert?: string;
+  foodBusinessInsurance?: string;
   requiresPower: boolean;
   requiresTent: number;
   insuranceExpires?: string;

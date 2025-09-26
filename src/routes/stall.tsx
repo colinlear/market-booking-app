@@ -17,6 +17,10 @@ import { StallManagerForm } from "@/stall/StallManagerForm";
 import { useStallStatus } from "@/stall/useMarketStatus";
 import { useStall } from "@/stall/useStall";
 import { LuMail, LuPhone } from "react-icons/lu";
+import { PhoneNumber } from "@/common/phone-number";
+import { SubHeader } from "@/common/subheader";
+import { BottomBar } from "@/common/bottom-bar";
+import { FoodStallRequirements } from "@/stall/FoodStallRequirements";
 
 export const StallRoute: FC = () => {
   const navigate = useNavigate();
@@ -24,7 +28,7 @@ export const StallRoute: FC = () => {
   const isAdmin = useIsMarketAdmin();
   const { stallId } = useParams();
 
-  const { stall } = useStall(stallId!);
+  const { stall, reload: reloadStall } = useStall(stallId!);
   const {
     stallStatus,
     loading: statusLoading,
@@ -33,12 +37,7 @@ export const StallRoute: FC = () => {
 
   return (
     <>
-      <Box
-        marginBottom={2}
-        borderRadius={6}
-        backgroundColor="rgba(69, 125, 21, 0.1)"
-        p={2}
-      >
+      <SubHeader height="4.5rem">
         <Heading size="lg" mb={2} display="flex" gap={2} alignItems="center">
           <Box>{stall?.name}</Box>
           <Box flex={1} />
@@ -94,12 +93,51 @@ export const StallRoute: FC = () => {
               <Icon>
                 <LuPhone />
               </Icon>
-              {stall?.phone}
+              <PhoneNumber phone={stall?.phone} />
             </Link>
           )}
         </HStack>
+      </SubHeader>
 
-        <Box whiteSpace="pre" mb={2}>
+      {isAdmin && !!stall && !!stallStatus && (
+        <Box
+          maxWidth="30rem"
+          marginBottom={2}
+          borderRadius={6}
+          backgroundColor={
+            stallStatus.status == "pending"
+              ? "yellow.500"
+              : stallStatus.status == "approved"
+              ? "blue.300"
+              : "red.300"
+          }
+          _dark={{
+            backgroundColor:
+              stallStatus.status == "pending"
+                ? "yellow.500"
+                : stallStatus.status == "approved"
+                ? "blue.600"
+                : "red",
+          }}
+          p={2}
+        >
+          <StallManagerForm
+            stall={stall}
+            status={stallStatus}
+            onChange={reload}
+          />
+        </Box>
+      )}
+
+      <Box
+        marginBottom={2}
+        borderRadius={6}
+        backgroundColor="rgba(69, 125, 21, 0.1)"
+        p={2}
+        maxWidth="30rem"
+      >
+        <Heading size="sm">Description:</Heading>
+        <Box whiteSpace="pre-wrap" mb={2}>
           {stall?.description}
         </Box>
 
@@ -133,38 +171,19 @@ export const StallRoute: FC = () => {
             </Tag.Root>
           )}
           <Box flex={1} />
-          <Button
-            size="sm"
-            colorPalette="blue"
-            onClick={() => navigate("edit")}
-          >
-            Edit Stall
-          </Button>
         </HStack>
+        {!!stall && (
+          <FoodStallRequirements stall={stall} onChange={() => reloadStall()} />
+        )}
       </Box>
-      {isAdmin && !!stall && !!stallStatus && (
-        <Box
-          marginBottom={2}
-          borderRadius={6}
-          backgroundColor="yellow.500"
-          _dark={{
-            backgroundColor: "orange.700",
-          }}
-          p={2}
-        >
-          <StallManagerForm
-            stall={stall}
-            status={stallStatus}
-            onChange={reload}
-          />
-        </Box>
-      )}
+
       {stallStatus?.status == "approved" && (
         <Box
           marginBottom={2}
           borderRadius={6}
           backgroundColor="rgba(69, 125, 21, 0.1)"
           p={2}
+          maxWidth="30rem"
         >
           <>
             <Heading size="lg">{market.name}</Heading>
@@ -179,6 +198,16 @@ export const StallRoute: FC = () => {
           )}
         </Box>
       )}
+      <Box height={10} />
+      <BottomBar>
+        <Button
+          width="100%"
+          colorPalette="blue"
+          onClick={() => navigate("edit")}
+        >
+          Edit Stall
+        </Button>
+      </BottomBar>
     </>
   );
 };

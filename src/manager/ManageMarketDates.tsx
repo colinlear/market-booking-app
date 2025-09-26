@@ -20,6 +20,7 @@ import { useNavigate } from "react-router";
 import { HiCalendar } from "react-icons/hi";
 import type { Booking } from "@/types";
 import { SubHeader } from "@/common/subheader";
+import { BottomBar } from "@/common/bottom-bar";
 
 export const ManageMarketDates: FC = () => {
   const navigate = useNavigate();
@@ -40,21 +41,10 @@ export const ManageMarketDates: FC = () => {
 
   return (
     <>
-      <SubHeader>
-        <HStack>
-          <Heading size="md" flex={1}>
-            Market Dates:
-          </Heading>
-          <AddDatesDialog
-            onChange={async (dates) => {
-              const olddates = new Set(market.dates);
-              for (const dt of dates) {
-                olddates.add(dt);
-              }
-              editMarket({ ...market, dates: [...olddates].sort() });
-            }}
-          />
-        </HStack>
+      <SubHeader height="2.5rem">
+        <Heading size="md" flex={1}>
+          Market Dates:
+        </Heading>
       </SubHeader>
 
       {Object.keys(groupDates)
@@ -95,6 +85,17 @@ export const ManageMarketDates: FC = () => {
               </Box>
             )
         )}
+      <BottomBar>
+        <AddDatesDialog
+          onChange={async (dates) => {
+            const olddates = new Set(market.dates);
+            for (const dt of dates) {
+              olddates.add(dt);
+            }
+            editMarket({ ...market, dates: [...olddates].sort() });
+          }}
+        />
+      </BottomBar>
     </>
   );
 };
@@ -113,7 +114,7 @@ export const AddDatesDialog: FC<{
   return (
     <Dialog.Root lazyMount open={open} onOpenChange={(e) => setOpen(e.open)}>
       <Dialog.Trigger asChild>
-        <Button colorPalette="blue" size="sm">
+        <Button colorPalette="blue" width="100%">
           Add Dates
         </Button>
       </Dialog.Trigger>
@@ -241,6 +242,7 @@ export const DeleteMarketButton: FC<{
           dates: market.dates.filter((d) => d != date),
         });
       }}
+      mb={20}
     >
       Cancel Market
     </Button>

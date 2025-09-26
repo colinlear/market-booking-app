@@ -42,7 +42,7 @@ export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
         {booking.cost <= 0 ? (
           <Box color="blue.700">Free</Box>
         ) : booking.status == "credited" ? (
-          <Box color="red.500">Cancelled with refund</Box>
+          <Box color="red.500">Credited</Box>
         ) : booking.status == "cancelled" ? (
           <Box color="red.500">Cancelled</Box>
         ) : booking.isPaid ? (

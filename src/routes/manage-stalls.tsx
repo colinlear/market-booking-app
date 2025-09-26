@@ -16,7 +16,7 @@ export const ManageStallsRoute: FC = () => {
 
   return (
     <>
-      <HStack mt={3} mb={2} justifyContent="space-between">
+      <HStack mt={3} mb={2} justifyContent="space-between" maxWidth="30rem">
         <Heading size="sm">Market Stalls:</Heading>
         <SegmentGroup.Root
           size="xs"

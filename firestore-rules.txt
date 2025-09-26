@@ -1,0 +1,47 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+  	function isGlobalAdmin() {
+      return request.auth != null && request.auth.token.email == 'colinlear@gmail.com.disabled';
+    }
+    
+    function isMarketAdmin(marketCode) {
+			return isGlobalAdmin() ||  (request.auth != null && request.auth.token.email in get(/databases/$(database)/documents/markets/$(marketCode)).data.admins);  
+    }
+
+    function isStallAdmin(stallId) {
+      return request.auth != null && get(/databases/$(database)/documents/stalls/$(stallId)).data.email == request.auth.token.email;
+    }
+
+		match /markets/{market} {
+      allow read: if request.auth != null;
+      allow update: if isGlobalAdmin() || (request.auth != null && request.auth.token.email in resource.data.admins);
+      allow create: if isGlobalAdmin();
+      allow delete: if isGlobalAdmin();
+    }
+
+		match /stalls/{stall} {
+      allow read: if request.auth != null;
+      allow create: if isMarketAdmin(request.resource.data.marketCode) || (request.auth != null && request.auth.token.email == request.resource.data.email);
+      allow update: if isMarketAdmin(resource.data.marketCode) || (request.auth != null && request.auth.token.email == request.resource.data.email && request.auth.token.email == resource.data.email);
+      allow delete: if isMarketAdmin(resource.data.marketCode) || (request.auth != null && request.auth.token.email == resource.data.email);
+    }
+
+	  match /stall-statuses/{stallstatus} {
+      allow get: if isMarketAdmin(resource.data.marketCode) || isStallAdmin(resource.data.stallId);
+      allow list: if isMarketAdmin(resource.data.marketCode);
+      allow create: if isMarketAdmin(request.resource.data.marketCode) || (isStallAdmin(request.resource.data.stallId) || request.resource.data.status == "pending");
+      allow update: if isMarketAdmin(resource.data.marketCode);
+      allow delete: if isMarketAdmin(resource.data.marketCode);
+    }
+
+		match /bookings/{booking} {
+      allow read: if isMarketAdmin(resource.data.marketCode) || isStallAdmin(resource.data.stall.id);
+      allow create: if isMarketAdmin(request.resource.data.marketCode) || isStallAdmin(request.resource.data.stall.id);
+      allow update: if isMarketAdmin(resource.data.marketCode) || isStallAdmin(resource.data.stall.id);
+      allow delete: if isMarketAdmin(resource.data.marketCode) || isStallAdmin(resource.data.stall.id);
+    }
+  }
+}

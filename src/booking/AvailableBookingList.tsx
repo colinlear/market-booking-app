@@ -81,7 +81,7 @@ export const BookingDate: FC<{ stall: Stall; cost: number; date: string }> = ({
           <Box flex="0 0 6rem">{date}</Box>
           <Box flex={1} display="flex" justifyContent="flex-end">
             {booking.status == "credited" ? (
-              <Box color="red.500">Cancelled with refund</Box>
+              <Box color="red.500">Credited</Box>
             ) : (
               <Box color="red.500">Cancelled</Box>
             )}

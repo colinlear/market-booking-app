@@ -55,14 +55,22 @@ export const getBooking = async (
   stallId: string,
   date: string
 ) => {
-  const bookingSnap = await getDoc(
-    doc(collection(data, bookingCollection), `${marketCode}-${stallId}-${date}`)
-  );
-  if (!bookingSnap.exists()) return undefined;
-  return {
-    id: bookingSnap.id,
-    ...bookingSnap.data(),
-  } as Booking;
+  try {
+    const bookingSnap = await getDoc(
+      doc(
+        collection(data, bookingCollection),
+        `${marketCode}-${stallId}-${date}`
+      )
+    );
+    if (!bookingSnap.exists()) return undefined;
+    return {
+      id: bookingSnap.id,
+      ...bookingSnap.data(),
+    } as Booking;
+  } catch {
+    // console.warn("Booking", `${marketCode}-${stallId}-${date}`, "not found");
+  }
+  return undefined;
 };
 
 export const createBooking = async (booking: BookingParams) => {

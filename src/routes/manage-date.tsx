@@ -9,6 +9,7 @@ import {
   Button,
   Heading,
   HStack,
+  Icon,
   SegmentGroup,
   Stack,
 } from "@chakra-ui/react";
@@ -20,13 +21,15 @@ import { createBooking, getBooking } from "@/firebase/booking";
 import { getStallStatus } from "@/firebase/stall-status";
 import { ExportBookingsDialog } from "@/booking/ExportBookings";
 import type { StatusFilter } from "@/manager/ManageMarketStalls";
+import { BsLightningChargeFill } from "react-icons/bs";
+import { PiTent } from "react-icons/pi";
 
 export const ManageDateRoute: FC = () => {
   const navigate = useNavigate();
   const { date } = useParams();
   const market = useMarket();
   const { bookings, loading, reloadBookings } = useMarketBookings(date);
-  const [filter, setFilter] = useState("all");
+  const [filter, setFilter] = useState("booked");
 
   const filteredBookings = useMemo(() => {
     if (filter == "all") return bookings;
@@ -36,6 +39,21 @@ export const ManageDateRoute: FC = () => {
         : b.status == "booked" && b.cost > 0 && !b.isPaid
     );
   }, [bookings, filter]);
+
+  const [power, tents] = useMemo(() => {
+    if (!bookings) return [0, 0];
+    let power = 0;
+    let tents = 0;
+    for (const b of bookings) {
+      if (b.stall.requiresPower) {
+        power++;
+      }
+      if (b.stall.requiresTent > 0) {
+        tents += b.stall.requiresTent;
+      }
+    }
+    return [power, tents];
+  }, [bookings]);
 
   const isAdmin = useIsMarketAdmin();
   if (!isAdmin) return "Access Denied";
@@ -50,18 +68,21 @@ export const ManageDateRoute: FC = () => {
   }
   return (
     <>
-      <SubHeader height="3.5rem">
-        <HStack justifyContent="space-between" mb={3}>
-          <Heading size="lg">{format(dt, "do MMM yyyy")}</Heading>
+      <SubHeader height="4.5rem" backgroundColor="red">
+        <Heading size="lg" mb={2}>
+          {format(dt, "do MMM yyyy")}
+        </Heading>
+        <HStack justifyContent="space-between" mb={3} maxW="30rem">
+          <Heading size="md">Bookings</Heading>
           <SegmentGroup.Root
             size="xs"
-            defaultValue={"All"}
+            defaultValue={"Booked"}
             onValueChange={(e) =>
               setFilter((e.value?.toLocaleLowerCase() ?? "all") as StatusFilter)
             }
           >
             <SegmentGroup.Indicator />
-            <SegmentGroup.Items items={["All", "Booked", "Unpaid"]} />
+            <SegmentGroup.Items items={["Booked", "Unpaid", "All"]} />
           </SegmentGroup.Root>
         </HStack>
       </SubHeader>
@@ -71,6 +92,35 @@ export const ManageDateRoute: FC = () => {
             No Bookings
           </Box>
         )}
+        <Box
+          bgColor="yellow.300"
+          fontStyle="italic"
+          fontSize={12}
+          fontWeight={600}
+          maxWidth="30rem"
+          _dark={{
+            bgColor: "orange.500",
+          }}
+          borderRadius={6}
+          padding={2}
+        >
+          {power > 0 && (
+            <Box m={2}>
+              <Icon size="lg" pr={2}>
+                <BsLightningChargeFill />
+              </Icon>{" "}
+              {power} Bookings Require Power
+            </Box>
+          )}
+          {tents > 0 && (
+            <Box m={2}>
+              <Icon size="lg" pr={2}>
+                <PiTent />
+              </Icon>{" "}
+              {tents} Tents Required
+            </Box>
+          )}
+        </Box>
         {filteredBookings?.map((booking) => (
           <BookingRow
             key={booking.id}
@@ -78,6 +128,7 @@ export const ManageDateRoute: FC = () => {
             reload={() => reloadBookings()}
           />
         ))}
+        <Box height={20} />
         <DeleteMarketButton
           date={format(dt, "yyyy-MM-dd")}
           bookings={bookings}

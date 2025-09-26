@@ -12,6 +12,7 @@ import {
 import { useState, type FC } from "react";
 import { useEditMarket } from "./useEditMarket";
 import { LuMinus, LuPlus } from "react-icons/lu";
+import { BottomBar } from "@/common/bottom-bar";
 
 export const MarketForm: FC<{
   market?: Market;
@@ -29,7 +30,7 @@ export const MarketForm: FC<{
     onSave(m);
   });
   return (
-    <Stack gap={2}>
+    <Stack gap={2} maxWidth="30rem">
       {!market && (
         <Field.Root
           required
@@ -61,7 +62,6 @@ export const MarketForm: FC<{
           onChange={(e) => setName(e.currentTarget.value)}
         />
       </Field.Root>
-
       <Field.Root>
         <Field.Label>Market Description</Field.Label>
         <Textarea
@@ -70,7 +70,6 @@ export const MarketForm: FC<{
           onChange={(e) => setDesc(e.currentTarget.value)}
         />
       </Field.Root>
-
       <Field.Root>
         <Field.Label>Market Logo URL</Field.Label>
         <Input
@@ -79,7 +78,6 @@ export const MarketForm: FC<{
           onChange={(e) => setLogo(e.currentTarget.value)}
         />
       </Field.Root>
-
       <Field.Root required mb={4}>
         <Field.Label>
           Stall Cost <Field.RequiredIndicator />
@@ -118,7 +116,6 @@ export const MarketForm: FC<{
           </HStack>
         </NumberInput.Root>
       </Field.Root>
-
       <Field.Root required mb={4}>
         <Field.Label>
           Power Cost <Field.RequiredIndicator />
@@ -159,7 +156,6 @@ export const MarketForm: FC<{
           The cost for a powered stall. 0 to disable.
         </Field.HelperText>
       </Field.Root>
-
       <Field.Root required mb={4}>
         <Field.Label>
           Tent Cost <Field.RequiredIndicator />
@@ -200,27 +196,30 @@ export const MarketForm: FC<{
           The cost to rent a gazebo from the market. O to disable.
         </Field.HelperText>
       </Field.Root>
-      <Button
-        colorPalette="green"
-        loading={loading}
-        disabled={!code.trim() || !name.trim()}
-        onClick={() => {
-          if (!code.trim() || !name.trim()) return;
-          editMarket({
-            code,
-            name,
-            description,
-            logo,
-            dates: market?.dates ?? [],
-            admins: market?.admins ?? [],
-            stallCost,
-            powerCost,
-            tentCost,
-          });
-        }}
-      >
-        {market ? "Save" : "Create"}
-      </Button>
+      <BottomBar>
+        <Button
+          width="100%"
+          colorPalette="green"
+          loading={loading}
+          disabled={!code.trim() || !name.trim()}
+          onClick={() => {
+            if (!code.trim() || !name.trim()) return;
+            editMarket({
+              code,
+              name,
+              description,
+              logo,
+              dates: market?.dates ?? [],
+              admins: market?.admins ?? [],
+              stallCost,
+              powerCost,
+              tentCost,
+            });
+          }}
+        >
+          {market ? "Save" : "Create"}
+        </Button>
+      </BottomBar>{" "}
     </Stack>
   );
 };

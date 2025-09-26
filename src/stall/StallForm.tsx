@@ -4,7 +4,6 @@ import {
   Button,
   Checkbox,
   CloseButton,
-  FileUpload,
   IconButton,
   InputGroup,
   NumberInput,
@@ -17,9 +16,10 @@ import { useState, type FC } from "react";
 import { useAddStall } from "./useAddStall";
 import { useEditStall } from "./useEditStall";
 import { useIsMarketAdmin, useMarket } from "@/MarketContext";
-import { LuFileUp, LuMinus, LuPlus } from "react-icons/lu";
+import { LuMinus, LuPlus } from "react-icons/lu";
 import { GoDot, GoPlus } from "react-icons/go";
 import { auth } from "@/firebase/firebase";
+import { BottomBar } from "@/common/bottom-bar";
 
 export const StallForm: FC<{
   stall?: Stall;
@@ -32,10 +32,10 @@ export const StallForm: FC<{
   const { editStall, loading: editLoading } = useEditStall(stall, onSave);
 
   const [email, setEmail] = useState(
-    stall?.email ?? !isAdmin ? auth.currentUser?.email ?? "" : ""
+    stall?.email ?? (!isAdmin ? auth.currentUser?.email ?? "" : "")
   );
   const [phone, setPhone] = useState(
-    stall?.phone ?? !isAdmin ? auth.currentUser?.phoneNumber ?? "" : ""
+    stall?.phone ?? (!isAdmin ? auth.currentUser?.phoneNumber ?? "" : "")
   );
 
   const [name, setName] = useState(stall?.name ?? "");
@@ -48,12 +48,9 @@ export const StallForm: FC<{
     stall?.requiresPower ?? false
   );
   const [requiresTent, setRequiresTent] = useState(stall?.requiresTent ?? 0);
-  const [insuranceExpires, setInsuranceExpires] = useState(
-    stall?.insuranceExpires
-  );
 
   return (
-    <Stack gap={6}>
+    <Stack gap={6} maxWidth="30rem">
       <Field.Root required>
         <Field.Label>
           Stall Name <Field.RequiredIndicator />
@@ -168,76 +165,6 @@ export const StallForm: FC<{
         <Checkbox.Label>This stall sells food or drinks</Checkbox.Label>
       </Checkbox.Root>
 
-      {isFoodStall && (
-        <>
-          <FileUpload.Root gap="1">
-            <FileUpload.HiddenInput />
-            <FileUpload.Label>Food Business Certificate</FileUpload.Label>
-            <InputGroup
-              startElement={<LuFileUp />}
-              endElement={
-                <FileUpload.ClearTrigger asChild>
-                  <CloseButton
-                    me="-1"
-                    size="xs"
-                    variant="plain"
-                    focusVisibleRing="inside"
-                    focusRingWidth="2px"
-                    pointerEvents="auto"
-                  />
-                </FileUpload.ClearTrigger>
-              }
-            >
-              <Input asChild>
-                <FileUpload.Trigger>
-                  <FileUpload.FileText lineClamp={1} />
-                </FileUpload.Trigger>
-              </Input>
-            </InputGroup>
-          </FileUpload.Root>
-
-          <FileUpload.Root gap="1">
-            <FileUpload.HiddenInput />
-            <FileUpload.Label>Insurance Certificate</FileUpload.Label>
-            <InputGroup
-              startElement={<LuFileUp />}
-              endElement={
-                <FileUpload.ClearTrigger asChild>
-                  <CloseButton
-                    me="-1"
-                    size="xs"
-                    variant="plain"
-                    focusVisibleRing="inside"
-                    focusRingWidth="2px"
-                    pointerEvents="auto"
-                  />
-                </FileUpload.ClearTrigger>
-              }
-            >
-              <Input asChild>
-                <FileUpload.Trigger>
-                  <FileUpload.FileText lineClamp={1} />
-                </FileUpload.Trigger>
-              </Input>
-            </InputGroup>
-          </FileUpload.Root>
-          <Field.Root required>
-            <Field.Label>
-              Insurance Expiry Date <Field.RequiredIndicator />
-            </Field.Label>
-            <Input
-              type="date"
-              placeholder="Insurance Expiry Date"
-              defaultValue={insuranceExpires}
-              onChange={(e) => setInsuranceExpires(e.currentTarget.value)}
-            />
-            <Field.HelperText>
-              Insurance must be for $20,000,000 and current.
-            </Field.HelperText>
-          </Field.Root>
-        </>
-      )}
-
       {(market.powerCost ?? 0) > 0 && (
         <Checkbox.Root defaultChecked={requiresPower}>
           <Checkbox.HiddenInput
@@ -292,42 +219,44 @@ export const StallForm: FC<{
           </NumberInput.Root>
         </Field.Root>
       )}
-
-      <Button
-        colorPalette="teal"
-        variant="solid"
-        loading={loading || editLoading}
-        onClick={() => {
-          if (stall && email.trim()) {
-            editStall({
-              ...stall,
-              email,
-              phone,
-              name,
-              description,
-              products,
-              size,
-              isFoodStall,
-              requiresPower,
-              requiresTent,
-            });
-          } else {
-            addStall({
-              email,
-              phone,
-              name,
-              description,
-              products,
-              size,
-              isFoodStall,
-              requiresPower,
-              requiresTent,
-            });
-          }
-        }}
-      >
-        Save
-      </Button>
+      <BottomBar>
+        <Button
+          width="100%"
+          colorPalette="teal"
+          variant="solid"
+          loading={loading || editLoading}
+          onClick={() => {
+            if (stall && email.trim()) {
+              editStall({
+                ...stall,
+                email,
+                phone,
+                name,
+                description,
+                products,
+                size,
+                isFoodStall,
+                requiresPower,
+                requiresTent,
+              });
+            } else {
+              addStall({
+                email,
+                phone,
+                name,
+                description,
+                products,
+                size,
+                isFoodStall,
+                requiresPower,
+                requiresTent,
+              });
+            }
+          }}
+        >
+          Save
+        </Button>
+      </BottomBar>
     </Stack>
   );
 };
