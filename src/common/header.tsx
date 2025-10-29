@@ -29,9 +29,11 @@ export const Header: FC = () => {
             alignItems="center"
             gap={3}
           >
-            <Box borderRadius="50%" backgroundColor="#fff" padding="0.25rem">
-              <Image height="3rem" width="3rem" src={market.logo} />
-            </Box>
+            {!!market.logo?.trim() && (
+              <Box borderRadius="50%" backgroundColor="#fff" padding="0.25rem">
+                <Image height="3rem" width="3rem" src={market.logo} />
+              </Box>
+            )}
             <Stack gap={0}>
               <Heading size="sm">{market.name}</Heading>
               <Heading size="2xl">Stallholder Portal</Heading>

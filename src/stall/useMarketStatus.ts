@@ -13,6 +13,8 @@ export const useStallStatus = (stallId: string) => {
     try {
       const ret = await getStallStatus(market.code, stallId);
       setStallStatus(ret);
+    } catch {
+      // this is generally because they have not applied to market
     } finally {
       setLoading(false);
     }

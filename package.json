@@ -12,6 +12,7 @@
   "dependencies": {
     "@chakra-ui/react": "^3.24.2",
     "@emotion/react": "^11.14.0",
+    "@stripe/stripe-js": "^8.0.0",
     "@types/convert-array-to-csv": "^2.0.2",
     "convert-array-to-csv": "^2.0.0",
     "date-fns": "^4.1.0",

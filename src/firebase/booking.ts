@@ -16,8 +16,8 @@ export const listMarketBookings = async (marketCode: string, date: string) => {
     query(
       collection(data, bookingCollection),
       where("date", "==", date),
-      where("marketCode", "==", marketCode)
-    )
+      where("marketCode", "==", marketCode),
+    ),
   );
   const ret: Booking[] = [];
   querySnapshot.forEach((doc) => {
@@ -36,8 +36,8 @@ export const listBookings = async (marketCode: string, stallId: string) => {
     query(
       collection(data, bookingCollection),
       where("stall.id", "==", stallId),
-      where("marketCode", "==", marketCode)
-    )
+      where("marketCode", "==", marketCode),
+    ),
   );
   const ret: Booking[] = [];
   querySnapshot.forEach((doc) => {
@@ -53,14 +53,14 @@ export const listBookings = async (marketCode: string, stallId: string) => {
 export const getBooking = async (
   marketCode: string,
   stallId: string,
-  date: string
+  date: string,
 ) => {
   try {
     const bookingSnap = await getDoc(
       doc(
         collection(data, bookingCollection),
-        `${marketCode}-${stallId}-${date}`
-      )
+        `${marketCode}-${stallId}-${date}`,
+      ),
     );
     if (!bookingSnap.exists()) return undefined;
     return {
@@ -77,12 +77,12 @@ export const createBooking = async (booking: BookingParams) => {
   await setDoc(
     doc(
       collection(data, bookingCollection),
-      `${booking.marketCode}-${booking.stall.id}-${booking.date}`
+      `${booking.marketCode}-${booking.stall.id}-${booking.date}`,
     ),
     {
       ...booking,
       uid: auth.currentUser?.uid,
-    }
+    },
   );
   return {
     id: `${booking.marketCode}-${booking.stall.id}-${booking.date}`,
@@ -100,10 +100,27 @@ export const cancelBooking = async (booking: Booking, refund = false) => {
   });
 };
 
+export const payBookingWithCredit = async (
+  credit: Booking,
+  booking: Booking,
+) => {
+  await runTransaction(data, async (transaction) => {
+    transaction.update(doc(collection(data, bookingCollection), credit.id), {
+      status: "cancelled",
+    });
+    transaction.update(doc(collection(data, bookingCollection), booking.id), {
+      isPaid: true,
+      cost: credit.cost ?? 0,
+      paymentId: credit.paymentId ?? "",
+      status: "booked",
+    });
+  });
+};
+
 export const payBooking = async (
   booking: Booking,
   paid: number,
-  paymentId: string
+  paymentId: string,
 ) => {
   await runTransaction(data, async (transaction) => {
     transaction.update(doc(collection(data, bookingCollection), booking.id), {

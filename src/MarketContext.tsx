@@ -6,17 +6,16 @@ import {
   useState,
 } from "react";
 import { auth } from "./firebase/firebase";
-import { listMarkets } from "./firebase/market";
+import { getMarket, listMarkets } from "./firebase/market";
 import type { Market } from "./types";
 
 export interface MarketContextProps {
   market: Market;
-  markets: Record<string, Market>;
   reload: () => void;
 }
 
 export const MarketContext = createContext<MarketContextProps>(
-  {} as MarketContextProps
+  {} as MarketContextProps,
 );
 
 export const useMarket = () =>
@@ -25,14 +24,36 @@ export const useMarket = () =>
 export const useReloadMarket = () =>
   useContext<MarketContextProps>(MarketContext).reload;
 
-export const useMarketList = () =>
-  useContext<MarketContextProps>(MarketContext).markets;
-
 export const useIsMarketAdmin = () => {
   const market = useMarket();
   return (
     !!auth.currentUser?.email && market.admins.includes(auth.currentUser?.email)
   );
+};
+
+export const useGetMarket = (marketCode?: string) => {
+  const [loading, setLoading] = useState(true);
+  const [market, setMarket] = useState<Market>();
+
+  const reloadMarket = useCallback(async () => {
+    if (!marketCode) {
+      setLoading(false);
+      return;
+    }
+    setLoading(true);
+    try {
+      const ret = await getMarket(marketCode);
+      setMarket(ret);
+    } finally {
+      setLoading(false);
+    }
+  }, [marketCode]);
+
+  useEffect(() => {
+    reloadMarket();
+  }, [reloadMarket]);
+
+  return { market, loading, reload: reloadMarket };
 };
 
 export const useListMarkets = () => {

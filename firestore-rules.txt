@@ -2,13 +2,13 @@ rules_version = '2';
 
 service cloud.firestore {
   match /databases/{database}/documents {
-  
+
   	function isGlobalAdmin() {
-      return request.auth != null && request.auth.token.email == 'something';
+      return request.auth != null && request.auth.token.email == '';
     }
-    
+
     function isMarketAdmin(marketCode) {
-			return isGlobalAdmin() ||  (request.auth != null && request.auth.token.email in get(/databases/$(database)/documents/markets/$(marketCode)).data.admins);  
+			return isGlobalAdmin() ||  (request.auth != null && request.auth.token.email in get(/databases/$(database)/documents/markets/$(marketCode)).data.admins);
     }
 
     function isStallAdmin(stallId) {
@@ -20,6 +20,13 @@ service cloud.firestore {
       allow update: if isGlobalAdmin() || (request.auth != null && request.auth.token.email in resource.data.admins);
       allow create: if isGlobalAdmin();
       allow delete: if isGlobalAdmin();
+    }
+
+    match /market-stripe-secret/{marketStripeSecret} {
+      allow read: if false;
+      allow update: if isMarketAdmin(request.resource.id);
+      allow create: if isMarketAdmin(request.resource.id);
+      allow delete: if isMarketAdmin(request.resource.id);
     }
 
 		match /stalls/{stall} {

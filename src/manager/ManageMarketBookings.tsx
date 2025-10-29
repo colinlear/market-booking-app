@@ -26,7 +26,7 @@ export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
   const market = useMarket();
   const { rebook, loading: rebookLoading } = useRebook(booking, () => reload());
   const { cancelBooking, loading: cancelLoading } = useCancelBooking(() =>
-    reload()
+    reload(),
   );
 
   return (
@@ -154,7 +154,9 @@ export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
           </Button>
         )}
         {booking.status == "booked" && !booking.isPaid && booking.cost > 0 && (
-          <BookingPaymentDialog booking={booking} onDone={() => reload()} />
+          <Box onClick={(e) => e.stopPropagation()}>
+            <BookingPaymentDialog booking={booking} onDone={() => reload()} />
+          </Box>
         )}
       </HStack>
     </Stack>

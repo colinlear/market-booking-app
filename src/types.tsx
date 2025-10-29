@@ -8,6 +8,7 @@ export interface Market {
   stallCost: number;
   tentCost?: number;
   powerCost?: number;
+  stripeAccount?: string;
 }
 
 export interface Stall {

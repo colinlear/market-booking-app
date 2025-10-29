@@ -24,7 +24,7 @@ export const SelectStallsDialog: FC<{
   const filteredStalls = useMemo(
     () =>
       stalls?.filter((s) => s.status.status == "approved" && !skip.has(s.id)),
-    [stalls, skip]
+    [stalls, skip],
   );
 
   useEffect(() => {
@@ -64,7 +64,7 @@ export const SelectStallsDialog: FC<{
             </Dialog.Body>
             <Dialog.Footer>
               <Dialog.ActionTrigger asChild>
-                <Button colorPalette="red">Cancel</Button>
+                <Button colorPalette="blue">Done</Button>
               </Dialog.ActionTrigger>
             </Dialog.Footer>
             <Dialog.CloseTrigger asChild>

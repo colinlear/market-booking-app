@@ -1,4 +1,4 @@
-import { setMarket } from "@/firebase/market";
+import { setMarket, updateMarket } from "@/firebase/market";
 import type { Market } from "@/types";
 import { useCallback, useState } from "react";
 
@@ -6,16 +6,21 @@ export const useEditMarket = (onDone: (market: Market) => void) => {
   const [loading, setLoading] = useState(false);
 
   const editMarket = useCallback(
-    async (market: Market) => {
+    async (
+      marketCode: string,
+      edits: Partial<Omit<Market, "code" | "created" | "updated">>,
+    ) => {
       setLoading(true);
       try {
-        await setMarket(market);
-        onDone(market);
+        const updated = await updateMarket(marketCode, edits);
+        if (updated) {
+          onDone(updated);
+        }
       } finally {
         setLoading(false);
       }
     },
-    [onDone]
+    [onDone],
   );
 
   return { editMarket, loading };
