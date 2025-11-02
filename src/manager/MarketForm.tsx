@@ -286,8 +286,7 @@ export const MarketForm: FC<{
           disabled={!code.trim() || !name.trim()}
           onClick={() => {
             if (!code.trim() || !name.trim()) return;
-            editMarket({
-              code,
+            editMarket(code, {
               name,
               description,
               logo,

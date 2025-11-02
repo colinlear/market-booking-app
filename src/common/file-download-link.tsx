@@ -10,13 +10,17 @@ export const FileDownloadLink: FC<{ path?: string } & PropsWithChildren> = ({
   const [url, setUrl] = useState<string>();
 
   useEffect(() => {
-    const storage = getStorage();
-    getDownloadURL(ref(storage, path)).then((url) => {
-      setUrl(url);
-    });
+    if (path) {
+      const storage = getStorage();
+      getDownloadURL(ref(storage, path))
+        .then((url) => {
+          setUrl(url);
+        })
+        .catch((e) => console.error(path, e));
+    }
   });
 
-  if (!url) return null;
+  if (!url) return children;
   return (
     <Link variant="underline" href={url} target="_blank">
       {children} <LuExternalLink />

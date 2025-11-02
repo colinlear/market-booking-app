@@ -1,6 +1,6 @@
 import type { FC } from "react";
 import { useNavigate } from "react-router";
-import { Box, Heading, Button } from "@chakra-ui/react";
+import { Box, Heading } from "@chakra-ui/react";
 
 import type { Stall } from "@/types";
 import { useStallStatus } from "./useMarketStatus";
@@ -8,6 +8,7 @@ import { StallBookingList } from "@/booking/StallBookingList";
 import { useStallApply } from "./useStallApply";
 import { useMarket } from "@/MarketContext";
 import { StallStatusWidget } from "./StallStatus";
+import { StallApplyDialog } from "./StallApplyDialog";
 
 export const StallDetails: FC<{ stall: Stall }> = ({ stall }) => {
   const navigate = useNavigate();
@@ -85,16 +86,14 @@ const RegisterForm: FC<{ stall: Stall; cb: () => void }> = ({ stall, cb }) => {
         Registration applications will be manually processed and the market
         manager will contact you with the outcome.
       </p>
-      <Button
-        mt={2}
-        colorPalette="green"
-        loading={loading}
-        onClick={() => {
-          applyToMarket();
-        }}
-      >
-        Register
-      </Button>
+      <Box mt={2} onClick={(e) => e.stopPropagation()}>
+        <StallApplyDialog
+          loading={loading}
+          onApply={(requiresPower, requiresTent) => {
+            applyToMarket(requiresPower, requiresTent);
+          }}
+        />
+      </Box>
     </Box>
   );
 };

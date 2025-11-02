@@ -1,4 +1,4 @@
-import type { Stall, StallStatus, StallStatusValues } from "@/types";
+import type { StallStatus, StallStatusValues } from "@/types";
 import {
   Button,
   Field,
@@ -15,21 +15,20 @@ import { useMarket } from "@/MarketContext";
 import { LuMinus, LuPlus } from "react-icons/lu";
 
 export const StallManagerForm: FC<{
-  stall: Stall;
   status: StallStatus;
   onChange: () => void;
-}> = ({ stall, status, onChange }) => {
+}> = ({ status, onChange }) => {
   const market = useMarket();
   const { setStallStatus, loading } = useSetStallStatus(status, onChange);
   const [newStatus, setNewStatus] = useState<StallStatusValues>(
-    status.status == "pending" ? "approved" : status.status
+    status.status == "pending" ? "approved" : status.status,
   );
   const [editing, setEditing] = useState(status.status == "pending");
 
   const [bookingCost, setBookingCost] = useState(
     25 +
-      (stall.requiresPower ? 10 : 0) +
-      (stall.requiresTent > 0 ? stall.requiresTent * 10 : 0)
+      (status.requiresPower ? 10 : 0) +
+      (status.requiresTent > 0 ? status.requiresTent * 10 : 0),
   );
 
   return (
@@ -116,12 +115,12 @@ export const StallManagerForm: FC<{
 
               <Field.HelperText>
                 Default: $25 (booking cost){" "}
-                {stall.requiresPower && ` + $${market.powerCost} power`}{" "}
-                {stall.requiresTent == 1
+                {status.requiresPower && ` + $${market.powerCost} power`}{" "}
+                {status.requiresTent == 1
                   ? ` + $${market.tentCost} tent`
-                  : stall.requiresTent > 1
-                  ? `${stall.requiresTent} x $${market.tentCost} tents`
-                  : ""}
+                  : status.requiresTent > 1
+                    ? `${status.requiresTent} x $${market.tentCost} tents`
+                    : ""}
               </Field.HelperText>
             </Field.Root>
           )}

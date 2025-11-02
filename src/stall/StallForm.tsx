@@ -1,4 +1,4 @@
-import type { Stall } from "@/types";
+import type { Stall, StallStatus } from "@/types";
 import {
   Box,
   Button,
@@ -23,8 +23,9 @@ import { BottomBar } from "@/common/bottom-bar";
 
 export const StallForm: FC<{
   stall?: Stall;
+  stallStatus?: StallStatus;
   onSave: (stall: Stall) => void;
-}> = ({ stall, onSave }) => {
+}> = ({ stall, stallStatus, onSave }) => {
   const market = useMarket();
   const isAdmin = useIsMarketAdmin();
 
@@ -45,9 +46,11 @@ export const StallForm: FC<{
   const [newProduct, setNewProduct] = useState("");
   const [isFoodStall, setIsFood] = useState(stall?.isFoodStall ?? false);
   const [requiresPower, setRequiresPower] = useState(
-    stall?.requiresPower ?? false
+    stallStatus?.requiresPower ?? false
   );
-  const [requiresTent, setRequiresTent] = useState(stall?.requiresTent ?? 0);
+  const [requiresTent, setRequiresTent] = useState(
+    stallStatus?.requiresTent ?? 0
+  );
 
   return (
     <Stack gap={6} maxWidth="30rem">
@@ -110,7 +113,7 @@ export const StallForm: FC<{
         <Field.Label>Product(s)</Field.Label>
         <Stack pl={2} width="100%">
           {products.sort().map((p) => (
-            <HStack>
+            <HStack key={p}>
               <GoDot />
               <Box flex={1}>{p}</Box>
               <CloseButton
@@ -165,7 +168,7 @@ export const StallForm: FC<{
         <Checkbox.Label>This stall sells food or drinks</Checkbox.Label>
       </Checkbox.Root>
 
-      {(market.powerCost ?? 0) > 0 && (
+      {(market.powerCost ?? 0) > 0 && (!stall || !!stallStatus) && (
         <Checkbox.Root defaultChecked={requiresPower}>
           <Checkbox.HiddenInput
             onChange={(e) => setRequiresPower(e.currentTarget.checked)}
@@ -175,7 +178,7 @@ export const StallForm: FC<{
         </Checkbox.Root>
       )}
 
-      {(market.tentCost ?? 0) > 0 && (
+      {(market.tentCost ?? 0) > 0 && (!stall || !!stallStatus) && (
         <Field.Root>
           <Field.Label>Requires Tent(s)</Field.Label>
           <NumberInput.Root
@@ -227,30 +230,39 @@ export const StallForm: FC<{
           loading={loading || editLoading}
           onClick={() => {
             if (stall && email.trim()) {
-              editStall({
-                ...stall,
-                email,
-                phone,
-                name,
-                description,
-                products,
-                size,
-                isFoodStall,
-                requiresPower,
-                requiresTent,
-              });
+              editStall(
+                {
+                  ...stall,
+                  email,
+                  phone,
+                  name,
+                  description,
+                  products,
+                  size,
+                  isFoodStall,
+                },
+                stallStatus
+                  ? {
+                      ...stallStatus,
+                      requiresPower,
+                      requiresTent,
+                    }
+                  : undefined
+              );
             } else {
-              addStall({
-                email,
-                phone,
-                name,
-                description,
-                products,
-                size,
-                isFoodStall,
+              addStall(
+                {
+                  email,
+                  phone,
+                  name,
+                  description,
+                  products,
+                  size,
+                  isFoodStall,
+                },
                 requiresPower,
-                requiresTent,
-              });
+                requiresTent
+              );
             }
           }}
         >

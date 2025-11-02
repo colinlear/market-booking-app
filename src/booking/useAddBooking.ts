@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
-import { createBooking } from "@/firebase/booking";
-import type { Booking, Stall } from "../types";
+import { createBooking, updateBooking } from "@/firebase/booking";
+import type { Booking, Stall, StallStatus } from "../types";
 import { useMarket } from "@/MarketContext";
 
 export const useAddBooking = (cb: (booking: Booking) => void) => {
@@ -9,16 +9,21 @@ export const useAddBooking = (cb: (booking: Booking) => void) => {
   const [loading, setLoading] = useState(false);
 
   const addBooking = useCallback(
-    async (stall: Stall, cost: number, date: string) => {
+    async (stall: Stall, status: StallStatus, date: string) => {
       setBooking(undefined);
       setLoading(true);
       try {
         const ret = await createBooking({
           marketCode: market.code,
           status: "booked",
-          stall,
+          stall: {
+            id: stall.id,
+            name: stall.name,
+          },
           date,
-          cost,
+          requiresPower: status.requiresPower,
+          requiresTent: status.requiresTent,
+          cost: status.bookingCost,
           isPaid: false,
         });
         if (ret) {
@@ -29,7 +34,7 @@ export const useAddBooking = (cb: (booking: Booking) => void) => {
         setLoading(false);
       }
     },
-    [cb, market]
+    [cb, market],
   );
 
   return { booking, addBooking, loading };
@@ -37,7 +42,7 @@ export const useAddBooking = (cb: (booking: Booking) => void) => {
 
 export const useRebook = (
   booking: Booking | undefined,
-  cb: (booking?: Booking) => void
+  cb: (booking?: Booking) => void,
 ) => {
   const [loading, setLoading] = useState(false);
 
@@ -45,16 +50,17 @@ export const useRebook = (
     if (!booking) return;
     setLoading(true);
     try {
-      const ret = await createBooking({
-        marketCode: booking.marketCode,
+      await updateBooking(booking.id, {
         status: "booked",
-        cost: booking.cost,
-        stall: booking.stall,
-        date: booking.date,
         isPaid: booking.status == "credited",
       });
-      if (ret) {
-        cb(ret);
+      if (cb) {
+        cb({
+          ...booking,
+          status: "booked",
+          isPaid: booking.status == "credited",
+          updated: new Date().toISOString(),
+        });
       }
     } finally {
       setLoading(false);

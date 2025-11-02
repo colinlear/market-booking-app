@@ -42,8 +42,9 @@ export const Header: FC = () => {
         </Link>
 
         <HStack
-          gap={2}
-          marginX={2}
+          gap={4}
+          marginLeft={3}
+          marginRight={5}
           color="#fff"
           height="2.5rem"
           alignItems="center"

@@ -7,6 +7,7 @@ import {
   getDoc,
   doc,
   setDoc,
+  updateDoc,
 } from "@firebase/firestore";
 import { data, stallStatusCollection, auth } from "./firebase";
 
@@ -79,21 +80,14 @@ export const applyStallStatus = async (
 };
 
 export const updateStallStatus = async (
-  status: StallStatus
+  marketCode: string,
+  stallId: string,
+  status: Partial<StallStatus>
 ): Promise<StallStatus> => {
-  const record: Omit<StallStatus, "id"> = {
-    ...status,
-    updated: new Date().toISOString(),
-  };
-  await setDoc(
-    doc(
-      collection(data, stallStatusCollection),
-      `${status.marketCode}-${status.stallId}`
-    ),
-    { ...record, uid: auth.currentUser?.uid }
+  console.debug("Update Status", `${marketCode}-${stallId}`, status);
+  await updateDoc(
+    doc(collection(data, stallStatusCollection), `${marketCode}-${stallId}`),
+    { ...status, updated: new Date().toISOString() }
   );
-  return {
-    id: `${status.marketCode}-${status.stallId}`,
-    ...record,
-  };
+  return getStallStatus(marketCode, stallId);
 };

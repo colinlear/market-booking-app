@@ -1,6 +1,7 @@
 import { LoadingPage } from "@/common/loading";
 import { useMarket } from "@/MarketContext";
 import { StallForm } from "@/stall/StallForm";
+import { useStallStatus } from "@/stall/useMarketStatus";
 import { useStall } from "@/stall/useStall";
 import { Button, Heading } from "@chakra-ui/react";
 import type { FC } from "react";
@@ -11,8 +12,9 @@ export const EditStallRoute: FC = () => {
   const navigate = useNavigate();
   const { stallId } = useParams();
   const { stall, loading } = useStall(stallId);
+  const { stallStatus, loading: statusLoading } = useStallStatus(stallId!);
 
-  if (loading) {
+  if (loading || statusLoading) {
     return <LoadingPage />;
   }
 
@@ -33,6 +35,7 @@ export const EditStallRoute: FC = () => {
   return (
     <StallForm
       stall={stall}
+      stallStatus={stallStatus}
       onSave={(s) => {
         navigate(`/${market.code}/stall/${s.id}`, { replace: true });
       }}

@@ -56,6 +56,10 @@ const router = createBrowserRouter([
         Component: StallRoute,
       },
       {
+        path: "stall/:stallId/edit",
+        Component: EditStallRoute,
+      },
+      {
         path: "stall/:stallId/checkout",
         Component: StallCheckoutRoute,
       },

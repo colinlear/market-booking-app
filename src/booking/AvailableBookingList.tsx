@@ -1,4 +1,4 @@
-import type { Booking, Stall } from "@/types";
+import type { Booking, Stall, StallStatus } from "@/types";
 import { Box, Button, Tag } from "@chakra-ui/react";
 import { HStack, Stack } from "@chakra-ui/react/stack";
 import { useMemo, type FC } from "react";
@@ -93,7 +93,7 @@ export const AvailableBookingList: FC<{
           <BookingDate
             key={ob.date}
             stall={stall}
-            cost={stallStatus?.bookingCost}
+            stallStatus={stallStatus}
             date={ob.date}
             booking={ob}
             reload={reload}
@@ -104,7 +104,7 @@ export const AvailableBookingList: FC<{
           <BookingDate
             key={dt}
             stall={stall}
-            cost={stallStatus?.bookingCost}
+            stallStatus={stallStatus}
             date={dt}
             booking={indexedBookings[dt]}
             reload={reload}
@@ -117,16 +117,16 @@ export const AvailableBookingList: FC<{
 
 export const BookingDate: FC<{
   stall: Stall;
-  cost: number;
+  stallStatus: StallStatus;
   date: string;
   booking?: Booking;
   reload: () => void;
   canEdit?: boolean;
-}> = ({ stall, cost, date, booking, reload, canEdit = true }) => {
+}> = ({ stall, stallStatus, date, booking, reload, canEdit = true }) => {
   const { addBooking, loading: addLoading } = useAddBooking(() => reload());
   const { rebook, loading: rebookLoading } = useRebook(booking, () => reload());
   const { cancelBooking, loading: cancelLoading } = useCancelBooking(() =>
-    reload(),
+    reload()
   );
 
   if (!booking) {
@@ -140,7 +140,7 @@ export const BookingDate: FC<{
             variant="solid"
             loading={addLoading}
             onClick={() => {
-              addBooking(stall, cost, date);
+              addBooking(stall, stallStatus, date);
             }}
           >
             Book

@@ -28,9 +28,7 @@ import { stripeAccountFunction } from "./stripeAccount";
 // this will be the maximum concurrent request count.
 setGlobalOptions({ maxInstances: 10 });
 
-const domain = "http://localhost:5173";
-
-export const stripePayment = stripePaymentFunction(domain);
+export const stripePayment = stripePaymentFunction;
 export const stripeCallback = stripeCallbackFunction;
 export const stripeAccount = stripeAccountFunction;
-export const stripeConnect = stripeConnectFunction(domain);
+export const stripeConnect = stripeConnectFunction;

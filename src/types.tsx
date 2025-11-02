@@ -23,8 +23,6 @@ export interface Stall {
   isFoodStall: boolean;
   foodBusinessCert?: string;
   foodBusinessInsurance?: string;
-  requiresPower: boolean;
-  requiresTent: number;
   insuranceExpires?: string;
   created: string;
   updated: string;
@@ -39,6 +37,8 @@ export interface StallStatus {
   stallId: string;
   marketCode: string;
   status: StallStatusValues;
+  requiresPower: boolean;
+  requiresTent: number;
   bookingCost: number;
   created: string;
   updated: string;
@@ -52,14 +52,23 @@ export type StallStatusParams = Omit<
 export interface Booking {
   id: string;
   marketCode: string;
-  stall: Stall;
+  stall: {
+    id: string;
+    name: string;
+  };
   date: string;
   cost: number;
   isPaid: boolean;
   status: "booked" | "cancelled" | "credited";
+  requiresPower?: boolean;
+  requiresTent?: number;
   paymentId?: string;
   created: string;
   updated: string;
+}
+
+export interface BookingWithStall extends Booking {
+  stall: Stall;
 }
 
 export type BookingParams = Omit<Booking, "id" | "created" | "updated">;

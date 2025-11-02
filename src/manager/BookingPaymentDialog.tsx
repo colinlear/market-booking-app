@@ -1,5 +1,5 @@
 import { payBooking } from "@/firebase/booking";
-import type { Booking } from "@/types";
+import type { BookingWithStall } from "@/types";
 import {
   Dialog,
   Button,
@@ -16,7 +16,7 @@ import { useState, type FC } from "react";
 import { LuMinus, LuPlus } from "react-icons/lu";
 
 export const BookingPaymentDialog: FC<{
-  booking: Booking;
+  booking: BookingWithStall;
   onDone: () => void;
 }> = ({ booking, onDone }) => {
   const [open, setOpen] = useState(false);

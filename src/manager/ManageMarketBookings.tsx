@@ -8,7 +8,7 @@ import {
   Stack,
   Tag,
 } from "@chakra-ui/react";
-import type { Booking } from "@/types";
+import type { BookingWithStall } from "@/types";
 import { useRebook } from "@/booking/useAddBooking";
 import { useCancelBooking } from "@/booking/useCancelBooking";
 import { useNavigate } from "react-router";
@@ -18,10 +18,10 @@ import { BsLightningChargeFill } from "react-icons/bs";
 import { Tooltip } from "@/components/ui/tooltip";
 import { PiTent } from "react-icons/pi";
 
-export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
-  booking,
-  reload,
-}) => {
+export const BookingRow: FC<{
+  booking: BookingWithStall;
+  reload: () => void;
+}> = ({ booking, reload }) => {
   const navigate = useNavigate();
   const market = useMarket();
   const { rebook, loading: rebookLoading } = useRebook(booking, () => reload());
@@ -44,25 +44,23 @@ export const BookingRow: FC<{ booking: Booking; reload: () => void }> = ({
       <HStack gap={2} alignItems="center" mb={2}>
         <Heading size="md">{booking.stall.name}</Heading>
         <Box>
-          {!!booking.stall.requiresPower && (
+          {!!booking.requiresPower && (
             <Tooltip content="Requires Power">
               <Icon size="lg">
                 <BsLightningChargeFill />
               </Icon>
             </Tooltip>
           )}
-          {booking.stall.requiresTent > 0 && (
+          {booking.requiresTent && (
             <Tooltip
               content={
-                booking.stall.requiresTent > 1
-                  ? `Requires ${booking.stall.requiresTent} tents`
+                booking.requiresTent > 1
+                  ? `Requires ${booking.requiresTent} tents`
                   : "Requires Tent"
               }
             >
               <span>
-                {booking.stall.requiresTent > 1
-                  ? `${booking.stall.requiresTent} x`
-                  : ""}
+                {booking.requiresTent > 1 ? `${booking.requiresTent} x` : ""}
                 <Icon size="lg">
                   <PiTent />
                 </Icon>

@@ -25,3 +25,4 @@ export const stallStatusCollection = "stall-statuses";
 export const marketCollection = "markets";
 export const stallCollection = "stalls";
 export const bookingCollection = "bookings";
+export const stripePaymentsCollection = "stripe-payments";

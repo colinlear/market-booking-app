@@ -57,13 +57,6 @@ export const stripeCallbackFunction = onRequest(
         const stallId = payment.stallId;
         const bookings = payment.bookings;
 
-        // set status as paid
-        await firestore.collection("stripe-payments").doc(sessionId).update({
-          status: "paid",
-          paymentId: session.invoice,
-          updated: new Date().toISOString(),
-        });
-
         const stall = (
           await firestore.collection("stalls").doc(stallId).get()
         ).data();
@@ -117,6 +110,14 @@ export const stripeCallbackFunction = onRequest(
               });
           }
         }
+
+        // set status as paid
+        await firestore.collection("stripe-payments").doc(sessionId).update({
+          status: "paid",
+          paymentId: session.invoice,
+          updated: new Date().toISOString(),
+        });
+
         return;
       }
 

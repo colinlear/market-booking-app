@@ -37,7 +37,7 @@ export const FoodStallRequirements: FC<{
       {stall.foodBusinessCert?.trim ? (
         <HStack justifyContent="space-between">
           <Box>
-            <FileDownloadLink path={stall.foodBusinessInsurance}>
+            <FileDownloadLink path={stall.foodBusinessCert}>
               Food Business Registration
             </FileDownloadLink>
           </Box>
@@ -210,7 +210,7 @@ export const FoodStallRegistrationDialog: FC<{
         <Dialog.Positioner>
           <Dialog.Content>
             <Dialog.Header>
-              <Dialog.Title>Food Stall Insurance</Dialog.Title>
+              <Dialog.Title>Food Stall Documentation</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body>
               <Stack gap={2}>

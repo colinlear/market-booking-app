@@ -73,8 +73,8 @@ export const ManageMarketDates: FC = () => {
                       navigate(
                         `/${market.code}/manage/date/${format(
                           dt,
-                          "yyyy-MM-dd"
-                        )}`
+                          "yyyy-MM-dd",
+                        )}`,
                       );
                     }}
                   >
@@ -83,7 +83,7 @@ export const ManageMarketDates: FC = () => {
                   </HStack>
                 ))}
               </Box>
-            )
+            ),
         )}
       <BottomBar>
         <AddDatesDialog
@@ -92,7 +92,7 @@ export const ManageMarketDates: FC = () => {
             for (const dt of dates) {
               olddates.add(dt);
             }
-            editMarket({ ...market, dates: [...olddates].sort() });
+            editMarket(market.code, { dates: [...olddates].sort() });
           }}
         />
       </BottomBar>
@@ -108,7 +108,7 @@ export const AddDatesDialog: FC<{
   const [weekday, setWeekday] = useState("0");
   const [startDate, setStartDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [endDate, setEndDate] = useState(
-    format(addMonths(new Date(), 1), "yyyy-MM-dd")
+    format(addMonths(new Date(), 1), "yyyy-MM-dd"),
   );
 
   return (
@@ -235,8 +235,7 @@ export const DeleteMarketButton: FC<{
       disabled={activeBookings == null || activeBookings > 0}
       loading={loading}
       onClick={() => {
-        editMarket({
-          ...market,
+        editMarket(market.code, {
           dates: market.dates.filter((d) => d != date),
         });
       }}

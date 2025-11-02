@@ -6,26 +6,31 @@ import { useCallback, useState } from "react";
 export const useStallApply = (stall: Stall, cb: () => void) => {
   const market = useMarket();
   const [loading, setLoading] = useState(false);
-  const applyToMarket = useCallback(async () => {
-    setLoading(true);
-    try {
-      await applyStallStatus({
-        marketCode: market.code,
-        stallId: stall.id,
-      });
+  const applyToMarket = useCallback(
+    async (requiresPower: boolean, requiresTent: number) => {
+      setLoading(true);
+      try {
+        await applyStallStatus({
+          marketCode: market.code,
+          stallId: stall.id,
+          requiresPower,
+          requiresTent,
+        });
 
-      cb();
-    } finally {
-      setLoading(false);
-    }
-  }, [cb, stall, market]);
+        cb();
+      } finally {
+        setLoading(false);
+      }
+    },
+    [cb, stall, market],
+  );
 
   return { applyToMarket, loading };
 };
 
 export const useSetStallStatus = (
   defaultStatus: StallStatus,
-  cb: () => void
+  cb: () => void,
 ) => {
   const [loading, setLoading] = useState(false);
   const setStallStatus = useCallback(
@@ -35,18 +40,21 @@ export const useSetStallStatus = (
     }: Pick<StallStatus, "status" | "bookingCost">) => {
       setLoading(true);
       try {
-        await updateStallStatus({
-          ...defaultStatus,
-          status,
-          bookingCost,
-        });
+        await updateStallStatus(
+          defaultStatus.marketCode,
+          defaultStatus.stallId,
+          {
+            status,
+            bookingCost,
+          },
+        );
 
         cb();
       } finally {
         setLoading(false);
       }
     },
-    [defaultStatus, cb]
+    [defaultStatus, cb],
   );
 
   return { setStallStatus, loading };

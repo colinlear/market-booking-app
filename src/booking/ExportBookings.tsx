@@ -1,4 +1,4 @@
-import type { Booking } from "@/types";
+import type { BookingWithStall } from "@/types";
 import {
   Button,
   CloseButton,
@@ -13,7 +13,7 @@ import { useCopyToClipboard } from "usehooks-ts";
 import { convertArrayToCSV } from "convert-array-to-csv";
 
 export const ExportBookingsDialog: FC<{
-  bookings: Booking[];
+  bookings: BookingWithStall[];
   filename: string;
 }> = ({ bookings, filename }) => {
   const [, copy] = useCopyToClipboard();
@@ -26,7 +26,7 @@ export const ExportBookingsDialog: FC<{
         b.stall.email,
         b.status,
         b.cost <= 0 ? "free" : b.isPaid ? "paid" : "unpaid",
-      ])
+      ]),
     );
     return ret;
   }, [bookings]);

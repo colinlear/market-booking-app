@@ -36,7 +36,7 @@ export const ManageDateRoute: FC = () => {
     return bookings?.filter((b) =>
       filter === "booked"
         ? b.status == "booked"
-        : b.status == "booked" && b.cost > 0 && !b.isPaid
+        : b.status == "booked" && b.cost > 0 && !b.isPaid,
     );
   }, [bookings, filter]);
 
@@ -45,11 +45,11 @@ export const ManageDateRoute: FC = () => {
     let power = 0;
     let tents = 0;
     for (const b of bookings) {
-      if (b.stall.requiresPower) {
+      if (b.requiresPower) {
         power++;
       }
-      if (b.stall.requiresTent > 0) {
-        tents += b.stall.requiresTent;
+      if (b.requiresTent && b.requiresTent > 0) {
+        tents += b.requiresTent;
       }
     }
     return [power, tents];

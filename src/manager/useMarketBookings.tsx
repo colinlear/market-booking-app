@@ -1,18 +1,32 @@
 import { listMarketBookings } from "@/firebase/booking";
+import { getStalls } from "@/firebase/stall";
 import { useMarket } from "@/MarketContext";
-import type { Booking } from "@/types";
+import type { BookingWithStall, Stall } from "@/types";
 import { useCallback, useEffect, useState } from "react";
 
 export const useMarketBookings = (date?: string) => {
   const market = useMarket();
-  const [bookings, setBookings] = useState<Booking[]>();
+  const [bookings, setBookings] = useState<BookingWithStall[]>();
   const [loading, setLoading] = useState(true);
 
   const reloadBookings = useCallback(async () => {
     if (!date) return;
     setLoading(true);
     try {
-      const ret = await listMarketBookings(market.code, date);
+      const bookings = await listMarketBookings(market.code, date);
+      const stallIds = bookings.map((s) => s.stall.id);
+      const stalls = await getStalls(stallIds);
+      const stallIdx: Record<string, Stall> = {};
+      for (const s of stalls) {
+        stallIdx[s.id] = s;
+      }
+      const ret: BookingWithStall[] = [];
+      for (const b of bookings) {
+        ret.push({
+          ...b,
+          stall: stallIdx[b.stall.id] ?? b.stall,
+        });
+      }
       // sort by booked/cancelled and name
       ret.sort((a, b) =>
         a.status == b.status

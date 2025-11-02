@@ -16,10 +16,10 @@ export const HomeRoute: FC = () => {
     <>
       {!!market.description.trim() && (
         <>
-          <Box p={2} bgColor="#efefef">
+          <Box mb={4} mt={4}>
             {market.description}
           </Box>
-          <Separator />
+          <Separator mb={4} />
         </>
       )}
       <StallList />

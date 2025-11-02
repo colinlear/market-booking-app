@@ -8,8 +8,9 @@ import {
   doc,
   setDoc,
   runTransaction,
+  updateDoc,
 } from "@firebase/firestore";
-import { data, bookingCollection, auth } from "./firebase";
+import { data, bookingCollection } from "./firebase";
 
 export const listMarketBookings = async (marketCode: string, date: string) => {
   const querySnapshot = await getDocs(
@@ -81,7 +82,8 @@ export const createBooking = async (booking: BookingParams) => {
     ),
     {
       ...booking,
-      uid: auth.currentUser?.uid,
+      created: new Date().toISOString(),
+      updated: new Date().toISOString(),
     },
   );
   return {
@@ -90,6 +92,16 @@ export const createBooking = async (booking: BookingParams) => {
     created: new Date().toISOString(),
     updated: new Date().toISOString(),
   };
+};
+
+export const updateBooking = async (
+  bookingId: string,
+  booking: Partial<BookingParams>,
+) => {
+  await updateDoc(doc(collection(data, bookingCollection), bookingId), {
+    ...booking,
+    updated: new Date().toISOString(),
+  });
 };
 
 export const cancelBooking = async (booking: Booking, refund = false) => {

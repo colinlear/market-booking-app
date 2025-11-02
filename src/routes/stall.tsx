@@ -108,24 +108,20 @@ export const StallRoute: FC = () => {
             stallStatus.status == "pending"
               ? "yellow.500"
               : stallStatus.status == "approved"
-              ? "blue.300"
-              : "red.300"
+                ? "blue.300"
+                : "red.300"
           }
           _dark={{
             backgroundColor:
               stallStatus.status == "pending"
                 ? "yellow.500"
                 : stallStatus.status == "approved"
-                ? "blue.600"
-                : "red",
+                  ? "blue.600"
+                  : "red",
           }}
           p={2}
         >
-          <StallManagerForm
-            stall={stall}
-            status={stallStatus}
-            onChange={reload}
-          />
+          <StallManagerForm status={stallStatus} onChange={reload} />
         </Box>
       )}
 
@@ -152,15 +148,17 @@ export const StallRoute: FC = () => {
           </Box>
         )}
         {!!stall?.size && <Heading size="sm">Size: {stall?.size}</Heading>}
-        {(stall?.requiresPower || !!stall?.requiresTent) && (
+        {(stallStatus?.requiresPower || !!stallStatus?.requiresTent) && (
           <Heading size="sm" mb={2}>
-            Requires: {stall?.requiresPower && "Power"}{" "}
-            {stall?.requiresPower && stall?.requiresTent > 0 && " & "}
-            {stall?.requiresTent > 0 &&
+            Requires: {stallStatus?.requiresPower && "Power"}{" "}
+            {stallStatus?.requiresPower &&
+              stallStatus?.requiresTent > 0 &&
+              " & "}
+            {stallStatus?.requiresTent > 0 &&
               `${
-                stall.requiresTent == 1
+                stallStatus.requiresTent == 1
                   ? "a tent"
-                  : `${stall.requiresTent} tents`
+                  : `${stallStatus.requiresTent} tents`
               }`}
           </Heading>
         )}
