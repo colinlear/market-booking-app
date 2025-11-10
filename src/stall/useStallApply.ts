@@ -7,7 +7,7 @@ export const useStallApply = (stall: Stall, cb: () => void) => {
   const market = useMarket();
   const [loading, setLoading] = useState(false);
   const applyToMarket = useCallback(
-    async (requiresPower: boolean, requiresTent: number) => {
+    async (requiresPower: boolean, requiresTent: number, size: string) => {
       setLoading(true);
       try {
         await applyStallStatus({
@@ -15,6 +15,7 @@ export const useStallApply = (stall: Stall, cb: () => void) => {
           stallId: stall.id,
           requiresPower,
           requiresTent,
+          size,
         });
 
         cb();
@@ -22,7 +23,7 @@ export const useStallApply = (stall: Stall, cb: () => void) => {
         setLoading(false);
       }
     },
-    [cb, stall, market],
+    [cb, stall, market]
   );
 
   return { applyToMarket, loading };
@@ -30,7 +31,7 @@ export const useStallApply = (stall: Stall, cb: () => void) => {
 
 export const useSetStallStatus = (
   defaultStatus: StallStatus,
-  cb: () => void,
+  cb: () => void
 ) => {
   const [loading, setLoading] = useState(false);
   const setStallStatus = useCallback(
@@ -46,7 +47,7 @@ export const useSetStallStatus = (
           {
             status,
             bookingCost,
-          },
+          }
         );
 
         cb();
@@ -54,7 +55,7 @@ export const useSetStallStatus = (
         setLoading(false);
       }
     },
-    [defaultStatus, cb],
+    [defaultStatus, cb]
   );
 
   return { setStallStatus, loading };

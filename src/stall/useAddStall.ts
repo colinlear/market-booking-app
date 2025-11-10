@@ -12,7 +12,8 @@ export const useAddStall = (cb: (stall: Stall) => void) => {
     async (
       stall: StallParams,
       requiresPower: boolean,
-      requiresTent: number
+      requiresTent: number,
+      size: string
     ) => {
       setStall(undefined);
       setLoading(true);
@@ -27,6 +28,7 @@ export const useAddStall = (cb: (stall: Stall) => void) => {
             stallId: ret.id,
             requiresPower,
             requiresTent,
+            size,
           });
           setStall(ret);
           cb(ret);

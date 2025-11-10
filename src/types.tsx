@@ -19,7 +19,6 @@ export interface Stall {
   name: string;
   description: string;
   products: string[];
-  size: string;
   isFoodStall: boolean;
   foodBusinessCert?: string;
   foodBusinessInsurance?: string;
@@ -37,8 +36,10 @@ export interface StallStatus {
   stallId: string;
   marketCode: string;
   status: StallStatusValues;
+  size: string;
   requiresPower: boolean;
   requiresTent: number;
+  notes?: string;
   bookingCost: number;
   created: string;
   updated: string;
@@ -69,6 +70,7 @@ export interface Booking {
 
 export interface BookingWithStall extends Booking {
   stall: Stall;
+  stallStatus?: StallStatus;
 }
 
 export type BookingParams = Omit<Booking, "id" | "created" | "updated">;

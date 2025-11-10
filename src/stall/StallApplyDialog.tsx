@@ -9,6 +9,7 @@ import {
   HStack,
   IconButton,
   Box,
+  Input,
 } from "@chakra-ui/react";
 import { Dialog } from "@chakra-ui/react/dialog";
 import { Portal } from "@chakra-ui/react/portal";
@@ -17,24 +18,14 @@ import { LuMinus, LuPlus } from "react-icons/lu";
 
 export const StallApplyDialog: FC<{
   loading?: boolean;
-  onApply: (requiresPower: boolean, requiresTent: number) => void;
+  onApply: (requiresPower: boolean, requiresTent: number, size: string) => void;
 }> = ({ loading, onApply }) => {
   const market = useMarket();
   const [open, setOpen] = useState(false);
   const [requiresPower, setRequiresPower] = useState(false);
   const [requiresTent, setRequiresTent] = useState(0);
+  const [size, setSize] = useState("3x3");
 
-  if (!market.tentCost && !market.powerCost) {
-    return (
-      <Button
-        colorPalette="black"
-        loading={loading}
-        onClick={() => onApply(false, 0)}
-      >
-        Register
-      </Button>
-    );
-  }
   return (
     <Dialog.Root lazyMount open={open} onOpenChange={(e) => setOpen(e.open)}>
       <Dialog.Trigger asChild>
@@ -51,6 +42,17 @@ export const StallApplyDialog: FC<{
             </Dialog.Header>
             <Dialog.Body>
               <Stack gap={2}>
+                <Field.Root>
+                  <Field.Label>Stall Size</Field.Label>
+                  <Input
+                    placeholder="Stall Size"
+                    defaultValue={size}
+                    onChange={(e) => setSize(e.currentTarget.value)}
+                  />
+                  <Field.HelperText>
+                    Size of stall in metres. Standard size is 3x3.
+                  </Field.HelperText>
+                </Field.Root>
                 {!!market.tentCost && (
                   <>
                     <Box marginBottom={4} fontWeight={600}>
@@ -137,7 +139,7 @@ export const StallApplyDialog: FC<{
                 colorPalette="green"
                 loading={loading}
                 onClick={() => {
-                  onApply(requiresPower, requiresTent);
+                  onApply(requiresPower, requiresTent, size);
                 }}
               >
                 Register

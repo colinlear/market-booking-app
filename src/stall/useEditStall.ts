@@ -5,6 +5,7 @@ import { updateStallStatus } from "@/firebase/stall-status";
 
 export const useEditStall = (
   defaultStall: Stall | undefined,
+  canEditStall: boolean,
   cb: (stall: Stall) => void
 ) => {
   const [loading, setLoading] = useState(false);
@@ -13,19 +14,25 @@ export const useEditStall = (
       if (!defaultStall) return;
       setLoading(true);
       try {
-        const ret = await updateStall(defaultStall.id, stall);
+        let ret: Stall | undefined;
+        if (canEditStall) {
+          ret = await updateStall(defaultStall.id, stall);
+        }
         if (status) {
           updateStallStatus(status.marketCode, status.stallId, {
             requiresPower: status.requiresPower,
             requiresTent: status.requiresTent,
+            size: status.size,
           });
         }
-        cb(ret);
+        if (ret) {
+          cb(ret);
+        }
       } finally {
         setLoading(false);
       }
     },
-    [cb, defaultStall]
+    [cb, canEditStall, defaultStall]
   );
 
   return { editStall, loading };

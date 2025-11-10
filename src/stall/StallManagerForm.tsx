@@ -21,14 +21,14 @@ export const StallManagerForm: FC<{
   const market = useMarket();
   const { setStallStatus, loading } = useSetStallStatus(status, onChange);
   const [newStatus, setNewStatus] = useState<StallStatusValues>(
-    status.status == "pending" ? "approved" : status.status,
+    status.status == "pending" ? "approved" : status.status
   );
   const [editing, setEditing] = useState(status.status == "pending");
 
   const [bookingCost, setBookingCost] = useState(
     25 +
       (status.requiresPower ? 10 : 0) +
-      (status.requiresTent > 0 ? status.requiresTent * 10 : 0),
+      (status.requiresTent > 0 ? status.requiresTent * 10 : 0)
   );
 
   return (
@@ -36,7 +36,7 @@ export const StallManagerForm: FC<{
       {!editing && (
         <HStack justifyContent="space-between">
           <Box fontWeight={600} textTransform="uppercase">
-            {status.status}
+            STATUS: {status.status}
           </Box>
           <Button onClick={() => setEditing(true)} colorPalette="blue">
             Edit
@@ -119,8 +119,8 @@ export const StallManagerForm: FC<{
                 {status.requiresTent == 1
                   ? ` + $${market.tentCost} tent`
                   : status.requiresTent > 1
-                    ? `${status.requiresTent} x $${market.tentCost} tents`
-                    : ""}
+                  ? `${status.requiresTent} x $${market.tentCost} tents`
+                  : ""}
               </Field.HelperText>
             </Field.Root>
           )}

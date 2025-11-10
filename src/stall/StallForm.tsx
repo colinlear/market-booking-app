@@ -4,8 +4,10 @@ import {
   Button,
   Checkbox,
   CloseButton,
+  Heading,
   IconButton,
   InputGroup,
+  List,
   NumberInput,
   Textarea,
 } from "@chakra-ui/react";
@@ -28,9 +30,14 @@ export const StallForm: FC<{
 }> = ({ stall, stallStatus, onSave }) => {
   const market = useMarket();
   const isAdmin = useIsMarketAdmin();
+  const canEditStall = !isAdmin || market.code == stall?.marketCode;
 
   const { addStall, loading } = useAddStall(onSave);
-  const { editStall, loading: editLoading } = useEditStall(stall, onSave);
+  const { editStall, loading: editLoading } = useEditStall(
+    stall,
+    canEditStall,
+    onSave
+  );
 
   const [email, setEmail] = useState(
     stall?.email ?? (!isAdmin ? auth.currentUser?.email ?? "" : "")
@@ -41,7 +48,7 @@ export const StallForm: FC<{
 
   const [name, setName] = useState(stall?.name ?? "");
   const [description, setDesc] = useState(stall?.description ?? "");
-  const [size, setSize] = useState(stall?.size ?? "3x3");
+  const [size, setSize] = useState(stallStatus?.size ?? "3x3");
   const [products, setProducts] = useState(stall?.products ?? []);
   const [newProduct, setNewProduct] = useState("");
   const [isFoodStall, setIsFood] = useState(stall?.isFoodStall ?? false);
@@ -51,9 +58,17 @@ export const StallForm: FC<{
   const [requiresTent, setRequiresTent] = useState(
     stallStatus?.requiresTent ?? 0
   );
+  const [notes, setNotes] = useState(stallStatus?.notes ?? "");
 
   return (
     <Stack gap={6} maxWidth="30rem">
+      {!canEditStall && (
+        <Box>
+          <Box color="fg.warning" m={0}>
+            Limited Access: Market Admin can only edit market specific fields.
+          </Box>
+        </Box>
+      )}
       <Field.Root required>
         <Field.Label>
           Stall Name <Field.RequiredIndicator />
@@ -62,6 +77,7 @@ export const StallForm: FC<{
           placeholder="Stall Name"
           defaultValue={name}
           onChange={(e) => setName(e.currentTarget.value)}
+          readOnly={!canEditStall}
         />
       </Field.Root>
 
@@ -72,6 +88,7 @@ export const StallForm: FC<{
           placeholder="Stall Description"
           onChange={(e) => setDesc(e.currentTarget.value)}
           rows={5}
+          readOnly={!canEditStall}
         />
       </Field.Root>
       {isAdmin && (
@@ -82,6 +99,7 @@ export const StallForm: FC<{
             value={email}
             placeholder="Email Address"
             onChange={(e) => setEmail(e.currentTarget.value)}
+            readOnly={!canEditStall}
           />
         </Field.Root>
       )}
@@ -93,21 +111,10 @@ export const StallForm: FC<{
             value={phone}
             placeholder="Phone Number"
             onChange={(e) => setPhone(e.currentTarget.value)}
+            readOnly={!canEditStall}
           />
         </Field.Root>
       )}
-
-      <Field.Root>
-        <Field.Label>Stall Size</Field.Label>
-        <Input
-          placeholder="Stall Size"
-          defaultValue={size}
-          onChange={(e) => setSize(e.currentTarget.value)}
-        />
-        <Field.HelperText>
-          Size of stall in metres. Standard size is 3x3.
-        </Field.HelperText>
-      </Field.Root>
 
       <Field.Root invalid={products.includes(newProduct.trim())}>
         <Field.Label>Product(s)</Field.Label>
@@ -156,17 +163,38 @@ export const StallForm: FC<{
                 }
               }
             }}
+            readOnly={!canEditStall}
           />
         </InputGroup>
       </Field.Root>
 
-      <Checkbox.Root defaultChecked={isFoodStall}>
-        <Checkbox.HiddenInput
-          onChange={(e) => setIsFood(e.currentTarget.checked)}
+      <Field.Root>
+        <Checkbox.Root defaultChecked={isFoodStall} readOnly={!canEditStall}>
+          <Checkbox.HiddenInput
+            onChange={(e) => setIsFood(e.currentTarget.checked)}
+          />
+          <Checkbox.Control />
+          <Checkbox.Label>This stall sells food or drinks</Checkbox.Label>
+        </Checkbox.Root>
+        <Field.HelperText>
+          Only applies when for human consumption.
+        </Field.HelperText>
+      </Field.Root>
+
+      <Heading size="md" color="fg.info" mt={4}>
+        Stall Properties for {market.name}.
+      </Heading>
+      <Field.Root>
+        <Field.Label>Stall Size</Field.Label>
+        <Input
+          placeholder="Stall Size"
+          defaultValue={size}
+          onChange={(e) => setSize(e.currentTarget.value)}
         />
-        <Checkbox.Control />
-        <Checkbox.Label>This stall sells food or drinks</Checkbox.Label>
-      </Checkbox.Root>
+        <Field.HelperText>
+          Size of stall in metres. Standard size is 3x3.
+        </Field.HelperText>
+      </Field.Root>
 
       {(market.powerCost ?? 0) > 0 && (!stall || !!stallStatus) && (
         <Checkbox.Root defaultChecked={requiresPower}>
@@ -222,6 +250,26 @@ export const StallForm: FC<{
           </NumberInput.Root>
         </Field.Root>
       )}
+      <Field.Root>
+        <Field.Label>Special Instructions</Field.Label>
+        <Textarea
+          value={notes}
+          placeholder="Special instructions, notes, comments etc."
+          onChange={(e) => setNotes(e.currentTarget.value)}
+          rows={5}
+        />
+        <Field.HelperText>
+          For Example:
+          <List.Root ml={4}>
+            <List.Item>Preferred location, or location requirements.</List.Item>
+            <List.Item>Parking next to, or near stall.</List.Item>
+            <List.Item>
+              Away from other stalls, like buskers, food, etc.
+            </List.Item>
+            <List.Item>Other...</List.Item>
+          </List.Root>
+        </Field.HelperText>
+      </Field.Root>
       <BottomBar>
         <Button
           width="100%"
@@ -238,12 +286,12 @@ export const StallForm: FC<{
                   name,
                   description,
                   products,
-                  size,
                   isFoodStall,
                 },
                 stallStatus
                   ? {
                       ...stallStatus,
+                      size,
                       requiresPower,
                       requiresTent,
                     }
@@ -257,11 +305,11 @@ export const StallForm: FC<{
                   name,
                   description,
                   products,
-                  size,
                   isFoodStall,
                 },
                 requiresPower,
-                requiresTent
+                requiresTent,
+                size
               );
             }
           }}

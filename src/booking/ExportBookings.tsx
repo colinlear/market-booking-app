@@ -1,10 +1,14 @@
 import type { BookingWithStall } from "@/types";
 import {
+  Box,
   Button,
+  Checkbox,
   CloseButton,
   Dialog,
   DownloadTrigger,
+  HStack,
   Portal,
+  Separator,
   Stack,
 } from "@chakra-ui/react";
 import { toaster } from "@/components/ui/toaster";
@@ -19,17 +23,43 @@ export const ExportBookingsDialog: FC<{
   const [, copy] = useCopyToClipboard();
   const [open, setOpen] = useState(false);
 
+  const [exportPayment, setExportPayment] = useState(false);
+  const [exportSetup, setExportSetup] = useState(false);
+
   const csv = useMemo(() => {
-    const ret = convertArrayToCSV(
-      bookings.map((b) => [
+    const ret = convertArrayToCSV([
+      [
+        "Stall",
+        "Email",
+        "Phone",
+        "Booking Status",
+        "Paid",
+        ...(exportPayment ? ["Payment Reference"] : []),
+        ...(exportSetup
+          ? ["Stall Size", "Requires Power", "Requires Tents", "Notes"]
+          : []),
+      ],
+      ...bookings.map((b) => [
         b.stall.name,
-        b.stall.email,
+        b.stall.email ?? "-",
+        b.stall.phone ?? "-",
         b.status,
         b.cost <= 0 ? "free" : b.isPaid ? "paid" : "unpaid",
+        ...(exportPayment ? [b.paymentId ?? "-"] : []),
+        ...(exportSetup
+          ? [
+              b.stallStatus?.size ?? "-",
+              b.stallStatus?.requiresPower ? "powered" : "-",
+              b.stallStatus?.requiresTent
+                ? `${b.stallStatus?.requiresTent} X tent`
+                : "-",
+              b.stallStatus?.notes ?? "-",
+            ]
+          : []),
       ]),
-    );
+    ]);
     return ret;
-  }, [bookings]);
+  }, [bookings, exportPayment, exportSetup]);
 
   return (
     <Dialog.Root lazyMount open={open} onOpenChange={(e) => setOpen(e.open)}>
@@ -44,7 +74,7 @@ export const ExportBookingsDialog: FC<{
               <Dialog.Title>Export Bookings</Dialog.Title>
             </Dialog.Header>
             <Dialog.Body>
-              <Stack gap={2}>
+              <Stack gap={4}>
                 <Button
                   colorPalette="yellow"
                   onClick={() => {
@@ -60,7 +90,29 @@ export const ExportBookingsDialog: FC<{
                 >
                   Copy List to Clipboard
                 </Button>
+
+                <HStack marginY={4}>
+                  <Separator flex={1} />
+                  <Box color="fg.subtle">OR</Box>
+                  <Separator flex={1} />
+                </HStack>
+
+                <Checkbox.Root defaultChecked={exportSetup}>
+                  <Checkbox.HiddenInput
+                    onChange={(e) => setExportSetup(e.currentTarget.checked)}
+                  />
+                  <Checkbox.Control />
+                  <Checkbox.Label>Export Stall Setup Details</Checkbox.Label>
+                </Checkbox.Root>
+                <Checkbox.Root defaultChecked={exportPayment}>
+                  <Checkbox.HiddenInput
+                    onChange={(e) => setExportPayment(e.currentTarget.checked)}
+                  />
+                  <Checkbox.Control />
+                  <Checkbox.Label>Export Payment Details</Checkbox.Label>
+                </Checkbox.Root>
                 <Button
+                  mt={4}
                   colorPalette="yellow"
                   onClick={() => {
                     copy(csv);
@@ -82,7 +134,7 @@ export const ExportBookingsDialog: FC<{
                   mimeType="application/csv"
                   asChild
                 >
-                  <Button colorPalette="blue">Download CSV</Button>
+                  <Button colorPalette="blue">Download CSV File</Button>
                 </DownloadTrigger>
               </Stack>
             </Dialog.Body>

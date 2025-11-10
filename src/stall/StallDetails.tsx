@@ -89,8 +89,8 @@ const RegisterForm: FC<{ stall: Stall; cb: () => void }> = ({ stall, cb }) => {
       <Box mt={2} onClick={(e) => e.stopPropagation()}>
         <StallApplyDialog
           loading={loading}
-          onApply={(requiresPower, requiresTent) => {
-            applyToMarket(requiresPower, requiresTent);
+          onApply={(requiresPower, requiresTent, size) => {
+            applyToMarket(requiresPower, requiresTent, size);
           }}
         />
       </Box>

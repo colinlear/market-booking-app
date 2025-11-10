@@ -108,16 +108,16 @@ export const StallRoute: FC = () => {
             stallStatus.status == "pending"
               ? "yellow.500"
               : stallStatus.status == "approved"
-                ? "blue.300"
-                : "red.300"
+              ? "blue.300"
+              : "red.300"
           }
           _dark={{
             backgroundColor:
               stallStatus.status == "pending"
                 ? "yellow.500"
                 : stallStatus.status == "approved"
-                  ? "blue.600"
-                  : "red",
+                ? "blue.600"
+                : "red",
           }}
           p={2}
         >
@@ -147,7 +147,9 @@ export const StallRoute: FC = () => {
             ))}
           </Box>
         )}
-        {!!stall?.size && <Heading size="sm">Size: {stall?.size}</Heading>}
+        {!!stallStatus?.size && (
+          <Heading size="sm">Size: {stallStatus?.size}</Heading>
+        )}
         {(stallStatus?.requiresPower || !!stallStatus?.requiresTent) && (
           <Heading size="sm" mb={2}>
             Requires: {stallStatus?.requiresPower && "Power"}{" "}

@@ -17,7 +17,7 @@ import { useEditMarket } from "./useEditMarket";
 import { LuMinus, LuPlus } from "react-icons/lu";
 import { BottomBar } from "@/common/bottom-bar";
 import { GoDot, GoPlus } from "react-icons/go";
-import { StripeConnectButton } from "./StripeConnectButton";
+// import { StripeConnectButton } from "./StripeConnectButton";
 import { useNavigate } from "react-router";
 
 export const MarketForm: FC<{
@@ -219,7 +219,7 @@ export const MarketForm: FC<{
             variant="solid"
             onClick={() =>
               navigate(
-                `/${market.code}/stripeConnect/${market.stripeAccount}/refresh`,
+                `/${market.code}/stripeConnect/${market.stripeAccount}/refresh`
               )
             }
           >
@@ -228,7 +228,8 @@ export const MarketForm: FC<{
         </HStack>
       ) : (
         <Box>
-          Online Payments are disabled. <StripeConnectButton />
+          Online Payments are disabled.
+          {/* <StripeConnectButton /> */}
         </Box>
       )}
       <Field.Root invalid={admins.includes(newAdmin.trim())}>

@@ -56,6 +56,32 @@ export const getStallStatus = async (market: string, stallId: string) => {
   return ret as StallStatus;
 };
 
+export const getMarketStallStatuses = async (
+  market: string,
+  stallIds: string[]
+) => {
+  const querySnapshot = await getDocs(
+    query(
+      collection(data, stallStatusCollection),
+      where(
+        "__name__",
+        "in",
+        stallIds.map((stallId) => `${market}-${stallId}`)
+      )
+    )
+  );
+  const ret: Record<string, StallStatus> = {};
+  querySnapshot.forEach((doc) => {
+    const data = doc.data();
+    ret[data.stallId] = {
+      id: doc.id,
+      ...data,
+    } as StallStatus;
+  });
+  // console.debug("StallStatuses", ret);
+  return ret;
+};
+
 export const applyStallStatus = async (
   status: StallStatusParams
 ): Promise<StallStatus> => {
@@ -84,7 +110,7 @@ export const updateStallStatus = async (
   stallId: string,
   status: Partial<StallStatus>
 ): Promise<StallStatus> => {
-  console.debug("Update Status", `${marketCode}-${stallId}`, status);
+  console.debug("Update Stall Status", status);
   await updateDoc(
     doc(collection(data, stallStatusCollection), `${marketCode}-${stallId}`),
     { ...status, updated: new Date().toISOString() }

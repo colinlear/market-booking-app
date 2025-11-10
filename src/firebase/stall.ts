@@ -16,8 +16,8 @@ export const listStalls = async () => {
     const querySnapshot = await getDocs(
       query(
         collection(data, stallCollection),
-        where("email", "==", auth.currentUser?.email),
-      ),
+        where("email", "==", auth.currentUser?.email)
+      )
     );
     const ret: Stall[] = [];
     querySnapshot.forEach((doc) => {
@@ -36,7 +36,7 @@ export const listStalls = async () => {
 
 export const getStalls = async (stallIds: string[]) => {
   const querySnapshot = await getDocs(
-    query(collection(data, stallCollection), where("__name__", "in", stallIds)),
+    query(collection(data, stallCollection), where("__name__", "in", stallIds))
   );
   const ret: Stall[] = [];
   querySnapshot.forEach((doc) => {
@@ -51,7 +51,7 @@ export const getStalls = async (stallIds: string[]) => {
 
 export const getStall = async (stallId: string) => {
   const docSnapshot = await getDoc(
-    doc(collection(data, stallCollection), stallId),
+    doc(collection(data, stallCollection), stallId)
   );
   const ret = {
     id: docSnapshot.id,
@@ -76,8 +76,9 @@ export const createStall = async (stall: StallParams): Promise<Stall> => {
 
 export const updateStall = async (
   id: string,
-  update: Partial<Stall>,
+  update: Partial<Stall>
 ): Promise<Stall> => {
+  console.debug("Update Stall", update);
   await updateDoc(doc(collection(data, stallCollection), id), {
     ...update,
     updated: new Date().toISOString(),

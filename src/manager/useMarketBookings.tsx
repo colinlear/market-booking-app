@@ -1,5 +1,6 @@
 import { listMarketBookings } from "@/firebase/booking";
 import { getStalls } from "@/firebase/stall";
+import { getMarketStallStatuses } from "@/firebase/stall-status";
 import { useMarket } from "@/MarketContext";
 import type { BookingWithStall, Stall } from "@/types";
 import { useCallback, useEffect, useState } from "react";
@@ -16,6 +17,7 @@ export const useMarketBookings = (date?: string) => {
       const bookings = await listMarketBookings(market.code, date);
       const stallIds = bookings.map((s) => s.stall.id);
       const stalls = await getStalls(stallIds);
+      const stallStatuses = await getMarketStallStatuses(market.code, stallIds);
       const stallIdx: Record<string, Stall> = {};
       for (const s of stalls) {
         stallIdx[s.id] = s;
@@ -25,6 +27,7 @@ export const useMarketBookings = (date?: string) => {
         ret.push({
           ...b,
           stall: stallIdx[b.stall.id] ?? b.stall,
+          stallStatus: stallStatuses[b.stall.id],
         });
       }
       // sort by booked/cancelled and name
