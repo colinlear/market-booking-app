@@ -40,13 +40,30 @@ export const AvailableBookingList: FC<{
 
   const visibleOldBookings = useMemo(() => {
     const yesterday = format(new Date(), "yyyy-MM-dd");
-    const ret = [
+    const ret: Record<string, Booking> = {};
+    for (const b of [
       ...unpaidBookings.filter((b) => b.date <= yesterday),
       ...creditedBookings.filter((b) => b.date <= yesterday),
-    ];
-    ret.sort((a, b) => a.date.localeCompare(b.date));
+    ]) {
+      ret[b.date] = b;
+    }
     return ret;
   }, [unpaidBookings, creditedBookings]);
+
+  const visibleDates = useMemo(
+    () => [...Object.keys(visibleOldBookings), ...dates].sort(),
+    [visibleOldBookings, dates]
+  );
+
+  const groupDates = useMemo(() => {
+    const ret: Record<string, string[]> = {};
+    for (const dts of visibleDates) {
+      const dt = new Date(dts);
+      const month = format(dt, "yyyy-MM");
+      ret[month] = [...(ret[month] ?? []), dts];
+    }
+    return ret;
+  }, [visibleDates]);
 
   if (loading || loadingBookings)
     return (
@@ -89,27 +106,31 @@ export const AvailableBookingList: FC<{
               </Button>
             </HStack>
           )}
-        {visibleOldBookings.map((ob) => (
-          <BookingDate
-            key={ob.date}
-            stall={stall}
-            stallStatus={stallStatus}
-            date={ob.date}
-            booking={ob}
-            reload={reload}
-            canEdit={false}
-          />
-        ))}
-        {dates.map((dt) => (
-          <BookingDate
-            key={dt}
-            stall={stall}
-            stallStatus={stallStatus}
-            date={dt}
-            booking={indexedBookings[dt]}
-            reload={reload}
-          />
-        ))}
+        {Object.keys(groupDates)
+          .sort()
+          .map(
+            (month) =>
+              !!groupDates[month].length && (
+                <Box key={month}>
+                  <Box fontWeight={600} my={1}>
+                    {format(groupDates[month][0], "MMMM yyyy")}
+                  </Box>
+                  <Stack gap={2} ml={2}>
+                    {groupDates[month].map((dt) => (
+                      <BookingDate
+                        key={dt}
+                        stall={stall}
+                        stallStatus={stallStatus}
+                        date={dt}
+                        booking={visibleOldBookings[dt] ?? indexedBookings[dt]}
+                        reload={reload}
+                        canEdit={!visibleOldBookings[dt]}
+                      />
+                    ))}
+                  </Stack>
+                </Box>
+              )
+          )}
       </Stack>
     </>
   );
@@ -132,7 +153,7 @@ export const BookingDate: FC<{
   if (!booking) {
     return (
       <Stack direction="row" gap={2} alignItems="center">
-        <Box flex="0 0 6rem">{date}</Box>
+        <Box flex="0 0 6rem">{format(new Date(date), "ccc do")}</Box>
         <Box flex={1} display="flex"></Box>
         <Box flex="0 0 5rem" display="flex" justifyContent="flex-end">
           <Button
@@ -158,8 +179,11 @@ export const BookingDate: FC<{
         alignItems="center"
         minHeight="var(--chakra-sizes-10)"
       >
-        <Box flex="0 0 6rem">{date}</Box>
+        <Box flex="0 0 6rem">{format(new Date(date), "ccc do")}</Box>
         <Box flex={1} display="flex">
+          <Tag.Root colorPalette="green" variant="solid" size="lg" mr={2}>
+            <Tag.Label>Booked</Tag.Label>
+          </Tag.Root>
           {booking.cost <= 0 ? (
             <Tag.Root colorPalette="blue" variant="solid" size="lg">
               <Tag.Label>Free</Tag.Label>
@@ -199,7 +223,7 @@ export const BookingDate: FC<{
       alignItems="center"
       minHeight="var(--chakra-sizes-10)"
     >
-      <Box flex="0 0 6rem">{date}</Box>
+      <Box flex="0 0 6rem">{format(new Date(date), "ccc do")}</Box>
       <Box flex={1} display="flex">
         {booking.status == "credited" ? (
           <Tag.Root colorPalette="red" variant="solid" size="lg">

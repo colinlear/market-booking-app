@@ -8,6 +8,7 @@ import {
   Input,
   InputGroup,
   Link as LinkTo,
+  Separator,
   Stack,
 } from "@chakra-ui/react";
 import { Link } from "react-router";
@@ -39,7 +40,7 @@ export const ManageMarketStalls: FC<{ status: StatusFilter }> = ({
   }, [stalls, status, filterName]);
 
   return (
-    <Stack gap={2} maxWidth="30rem">
+    <Stack maxWidth="30rem">
       <InputGroup startElement={<HiSearch />}>
         <Input
           placeholder="Search Stalls"
@@ -65,21 +66,18 @@ export const StallRow: FC<{ stall: StallWithStatus; reload: () => void }> = ({
 }) => {
   const market = useMarket();
   return (
-    <Link to={`/${market.code}/stall/${stall.id}`}>
-      <Stack
-        gap={2}
-        borderRadius={6}
-        backgroundColor="rgba(69, 125, 21, 0.1)"
-        p={2}
-        maxWidth="30rem"
-        _hover={{
-          backgroundColor: "rgba(69, 125, 21, 0.15)",
-        }}
-      >
+    <>
+      <Separator marginY={2} maxWidth="30rem" />
+      <Stack gap={2} maxWidth="30rem">
         <HStack gap={2}>
-          <Heading size="lg" flex="1">
-            {stall.name}
-          </Heading>
+          <LinkTo asChild variant="underline">
+            <Link to={`/${market.code}/stall/${stall.id}`}>
+              <Heading size="lg" flex="1">
+                {stall.name}
+              </Heading>
+            </Link>
+          </LinkTo>
+          <Box flex={1} />
           <StallStatusWidget status={stall?.status?.status} />
         </HStack>
         <HStack gap={2} justifyContent="space-between">
@@ -88,6 +86,7 @@ export const StallRow: FC<{ stall: StallWithStatus; reload: () => void }> = ({
             colorPalette="blue"
             href={`mailto:${stall.email}`}
             onClick={(e) => e.stopPropagation()}
+            fontSize="80%"
           >
             <Icon>
               <LuMail />
@@ -100,6 +99,7 @@ export const StallRow: FC<{ stall: StallWithStatus; reload: () => void }> = ({
               colorPalette="blue"
               href={`tel:${stall.phone}`}
               onClick={(e) => e.stopPropagation()}
+              fontSize="80%"
             >
               <Icon>
                 <LuPhone />
@@ -109,6 +109,6 @@ export const StallRow: FC<{ stall: StallWithStatus; reload: () => void }> = ({
           )}
         </HStack>
       </Stack>
-    </Link>
+    </>
   );
 };

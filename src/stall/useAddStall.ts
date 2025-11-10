@@ -13,7 +13,8 @@ export const useAddStall = (cb: (stall: Stall) => void) => {
       stall: StallParams,
       requiresPower: boolean,
       requiresTent: number,
-      size: string
+      size: string,
+      notes: string
     ) => {
       setStall(undefined);
       setLoading(true);
@@ -29,6 +30,7 @@ export const useAddStall = (cb: (stall: Stall) => void) => {
             requiresPower,
             requiresTent,
             size,
+            notes,
           });
           setStall(ret);
           cb(ret);

@@ -50,7 +50,9 @@ export const FoodStallRequirements: FC<{
         </HStack>
       ) : (
         <HStack justifyContent="space-between">
-          <Box color="red">Missing Food Business Registration</Box>
+          <Box color="red" fontSize="90%">
+            Missing Food Business Registration
+          </Box>
           <FoodStallRegistrationDialog
             stall={stall}
             label="Upload"
@@ -60,26 +62,30 @@ export const FoodStallRequirements: FC<{
         </HStack>
       )}
       {stall.foodBusinessInsurance?.trim && expires > 0 ? (
-        <HStack justifyContent="space-between">
-          <Stack gap={2} color={expires > 10 ? "" : "orange.600"}>
-            <FileDownloadLink path={stall.foodBusinessInsurance}>
-              Insurance Certificate
-            </FileDownloadLink>
+        <>
+          <HStack justifyContent="space-between">
             <Box>
-              Insurance Expires in {expires} day{expires != 1 ? "s" : ""}. (
-              {expireDate?.toLocaleDateString()})
+              <FileDownloadLink path={stall.foodBusinessInsurance}>
+                Insurance Certificate
+              </FileDownloadLink>
             </Box>
-          </Stack>
-          <FoodStallInsuranceDialog
-            stall={stall}
-            label="Update"
-            button={{ colorPalette: "blue" }}
-            onDone={onChange}
-          />
-        </HStack>
+            <FoodStallInsuranceDialog
+              stall={stall}
+              label="Update"
+              button={{ colorPalette: "blue" }}
+              onDone={onChange}
+            />
+          </HStack>
+          <Box fontSize="90%" textAlign="center">
+            Insurance Expires in {expires} day{expires != 1 ? "s" : ""}. (
+            {expireDate?.toLocaleDateString()})
+          </Box>
+        </>
       ) : (
         <HStack justifyContent="space-between">
-          <Box color="red">Missing Valid Insurance Certificate</Box>
+          <Box color="red" fontSize="90%">
+            Missing Valid Insurance Certificate
+          </Box>
           <FoodStallInsuranceDialog
             stall={stall}
             label="Upload"
@@ -113,7 +119,11 @@ export const FoodStallInsuranceDialog: FC<{
   return (
     <Dialog.Root lazyMount open={open} onOpenChange={(e) => setOpen(e.open)}>
       <Dialog.Trigger asChild>
-        <Button {...button} disabled={stall.email !== auth.currentUser?.email}>
+        <Button
+          {...button}
+          disabled={stall.email !== auth.currentUser?.email}
+          size="sm"
+        >
           {label}
         </Button>
       </Dialog.Trigger>
@@ -201,7 +211,11 @@ export const FoodStallRegistrationDialog: FC<{
   return (
     <Dialog.Root lazyMount open={open} onOpenChange={(e) => setOpen(e.open)}>
       <Dialog.Trigger asChild>
-        <Button {...button} disabled={stall.email !== auth.currentUser?.email}>
+        <Button
+          {...button}
+          disabled={stall.email !== auth.currentUser?.email}
+          size="sm"
+        >
           {label}
         </Button>
       </Dialog.Trigger>

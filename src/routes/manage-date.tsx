@@ -36,7 +36,7 @@ export const ManageDateRoute: FC = () => {
     return bookings?.filter((b) =>
       filter === "booked"
         ? b.status == "booked"
-        : b.status == "booked" && b.cost > 0 && !b.isPaid,
+        : b.status == "booked" && b.cost > 0 && !b.isPaid
     );
   }, [bookings, filter]);
 
@@ -68,10 +68,11 @@ export const ManageDateRoute: FC = () => {
   }
   return (
     <>
-      <SubHeader height="4.5rem" backgroundColor="red">
+      <SubHeader height="4.5rem">
         <Heading size="lg" mb={2}>
           {format(dt, "do MMM yyyy")}
         </Heading>
+
         <HStack justifyContent="space-between" mb={3} maxW="30rem">
           <Heading size="md">Bookings</Heading>
           <SegmentGroup.Root
@@ -87,11 +88,6 @@ export const ManageDateRoute: FC = () => {
         </HStack>
       </SubHeader>
       <Stack gap={2}>
-        {!loading && !filteredBookings?.length && (
-          <Box fontStyle="italic" fontSize={12}>
-            No Bookings
-          </Box>
-        )}
         <Box
           bgColor="yellow.300"
           fontStyle="italic"
@@ -103,6 +99,7 @@ export const ManageDateRoute: FC = () => {
           }}
           borderRadius={6}
           padding={2}
+          mb={2}
         >
           {power > 0 && (
             <Box m={2}>
@@ -121,6 +118,12 @@ export const ManageDateRoute: FC = () => {
             </Box>
           )}
         </Box>
+        {!loading && !filteredBookings?.length && (
+          <Box fontStyle="italic" fontSize={12}>
+            No Bookings
+          </Box>
+        )}
+
         {filteredBookings?.map((booking) => (
           <BookingRow
             key={booking.id}

@@ -38,7 +38,11 @@ export const StallManagerForm: FC<{
           <Box fontWeight={600} textTransform="uppercase">
             STATUS: {status.status}
           </Box>
-          <Button onClick={() => setEditing(true)} colorPalette="blue">
+          <Button
+            onClick={() => setEditing(true)}
+            colorPalette="blue"
+            size="sm"
+          >
             Edit
           </Button>
         </HStack>

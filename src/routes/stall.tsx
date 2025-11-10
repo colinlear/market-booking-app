@@ -7,6 +7,7 @@ import {
   HStack,
   Icon,
   Link,
+  Separator,
   Tag,
 } from "@chakra-ui/react";
 import { HiCheck } from "react-icons/hi";
@@ -37,7 +38,7 @@ export const StallRoute: FC = () => {
 
   return (
     <>
-      <SubHeader height="4.5rem">
+      <SubHeader height="4.3rem">
         <Heading size="lg" mb={2} display="flex" gap={2} alignItems="center">
           <Box>{stall?.name}</Box>
           <Box flex={1} />
@@ -76,6 +77,7 @@ export const StallRoute: FC = () => {
               colorPalette="blue"
               href={`mailto:${stall?.email}`}
               onClick={(e) => e.stopPropagation()}
+              fontSize="80%"
             >
               <Icon>
                 <LuMail />
@@ -89,6 +91,7 @@ export const StallRoute: FC = () => {
               colorPalette="blue"
               href={`tel:${stall?.phone}`}
               onClick={(e) => e.stopPropagation()}
+              fontSize="80%"
             >
               <Icon>
                 <LuPhone />
@@ -102,7 +105,7 @@ export const StallRoute: FC = () => {
       {isAdmin && !!stall && !!stallStatus && (
         <Box
           maxWidth="30rem"
-          marginBottom={2}
+          marginBottom={4}
           borderRadius={6}
           backgroundColor={
             stallStatus.status == "pending"
@@ -125,21 +128,15 @@ export const StallRoute: FC = () => {
         </Box>
       )}
 
-      <Box
-        marginBottom={2}
-        borderRadius={6}
-        backgroundColor="rgba(69, 125, 21, 0.1)"
-        p={2}
-        maxWidth="30rem"
-      >
+      <Box maxWidth="30rem">
         <Heading size="sm">Description:</Heading>
-        <Box whiteSpace="pre-wrap" mb={2}>
+        <Box whiteSpace="pre-wrap" mb={2} fontSize="90%">
           {stall?.description}
         </Box>
 
         {!!stall?.products.length && (
-          <Box mb={3}>
-            <Heading size="xs">Products</Heading>
+          <Box>
+            <Heading size="sm">Products:</Heading>
             {stall?.products.map((p) => (
               <Box fontWeight={600} fontSize={12} key={p}>
                 - {p}
@@ -147,56 +144,75 @@ export const StallRoute: FC = () => {
             ))}
           </Box>
         )}
-        {!!stallStatus?.size && (
-          <Heading size="sm">Size: {stallStatus?.size}</Heading>
-        )}
-        {(stallStatus?.requiresPower || !!stallStatus?.requiresTent) && (
-          <Heading size="sm" mb={2}>
-            Requires: {stallStatus?.requiresPower && "Power"}{" "}
-            {stallStatus?.requiresPower &&
-              stallStatus?.requiresTent > 0 &&
-              " & "}
-            {stallStatus?.requiresTent > 0 &&
-              `${
-                stallStatus.requiresTent == 1
-                  ? "a tent"
-                  : `${stallStatus.requiresTent} tents`
-              }`}
-          </Heading>
-        )}
-        <HStack alignItems="flex-end">
-          {stall?.isFoodStall && (
-            <Tag.Root colorPalette="orange" variant="solid" size="lg">
-              <Tag.Label>Food / Drink</Tag.Label>
-            </Tag.Root>
-          )}
-          <Box flex={1} />
-        </HStack>
+
         {!!stall && (
           <FoodStallRequirements stall={stall} onChange={() => reloadStall()} />
         )}
       </Box>
 
       {stallStatus?.status == "approved" && (
-        <Box
-          marginBottom={2}
-          borderRadius={6}
-          backgroundColor="rgba(69, 125, 21, 0.1)"
-          p={2}
-          maxWidth="30rem"
-        >
-          <>
-            <Heading size="lg">{market.name}</Heading>
-            <Box fontWeight={800} fontSize={13} my={3}>
-              Booking Cost: $
-              {stallStatus.bookingCost?.toLocaleString() ?? "FREE"}
-            </Box>
-          </>
-
-          {!!stall && stallStatus?.status == "approved" && (
-            <AvailableBookingList stall={stall} />
-          )}
-        </Box>
+        <>
+          <Separator marginY={4} maxWidth="30rem" />
+          <Box marginBottom={2} borderRadius={6} maxWidth="30rem">
+            <Heading size="lg" color="fg.primary">
+              Bookings: {market.name}
+            </Heading>
+            <Heading size="sm" mt={3}>
+              <HStack>
+                <Box>Booking Cost:</Box>
+                <Box flex={1} />
+                <Box>
+                  {stallStatus.bookingCost > 0
+                    ? `$${stallStatus.bookingCost?.toLocaleString()}`
+                    : "FREE"}
+                </Box>
+              </HStack>
+            </Heading>
+            {!!stallStatus?.size && (
+              <Heading size="sm">
+                <HStack>
+                  <Box>Size:</Box>
+                  <Box flex={1} />
+                  <Box>{stallStatus?.size}</Box>
+                </HStack>
+              </Heading>
+            )}
+            {(stallStatus?.requiresPower || !!stallStatus?.requiresTent) && (
+              <Heading size="sm" mb={2}>
+                <HStack>
+                  <Box>Requirements</Box>
+                  <Box flex={1} />
+                  <Box>
+                    {stallStatus?.requiresPower && "Power"}{" "}
+                    {stallStatus?.requiresPower &&
+                      stallStatus?.requiresTent > 0 &&
+                      " & "}
+                    {stallStatus?.requiresTent > 0 &&
+                      `${
+                        stallStatus.requiresTent == 1
+                          ? "a tent"
+                          : `${stallStatus.requiresTent} tents`
+                      }`}
+                  </Box>
+                </HStack>
+              </Heading>
+            )}
+            {!!stallStatus?.notes?.trim() && (
+              <>
+                <Heading size="sm" mt={2}>
+                  Special Requirements:
+                </Heading>
+                <Box whiteSpace="pre-wrap" mb={2} fontSize="90%">
+                  {stallStatus?.notes}
+                </Box>
+              </>
+            )}
+            <Box mt={4} />
+            {!!stall && stallStatus?.status == "approved" && (
+              <AvailableBookingList stall={stall} />
+            )}
+          </Box>
+        </>
       )}
       <Box height={10} />
       <BottomBar>
@@ -205,7 +221,7 @@ export const StallRoute: FC = () => {
           colorPalette="blue"
           onClick={() => navigate("edit")}
         >
-          Edit Stall
+          Edit Stall {isAdmin && !stall?.marketCode && "Status"}
         </Button>
       </BottomBar>
     </>

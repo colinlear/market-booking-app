@@ -22,7 +22,7 @@ export const FileDownloadLink: FC<{ path?: string } & PropsWithChildren> = ({
 
   if (!url) return children;
   return (
-    <Link variant="underline" href={url} target="_blank">
+    <Link variant="underline" href={url} target="_blank" fontSize="90%">
       {children} <LuExternalLink />
     </Link>
   );

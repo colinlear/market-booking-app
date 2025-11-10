@@ -23,11 +23,10 @@ export const useEditStall = (
             requiresPower: status.requiresPower,
             requiresTent: status.requiresTent,
             size: status.size,
+            notes: status.notes,
           });
         }
-        if (ret) {
-          cb(ret);
-        }
+        cb(ret ?? defaultStall);
       } finally {
         setLoading(false);
       }

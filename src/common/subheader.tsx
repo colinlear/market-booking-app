@@ -5,6 +5,7 @@ export const SubHeader: FC<BoxProps> = ({
   children,
   height = "2.75rem",
   padding = 2,
+  ...props
 }) => {
   return (
     <>
@@ -17,6 +18,7 @@ export const SubHeader: FC<BoxProps> = ({
         backgroundColor="bg.panel"
         zIndex={10}
         padding={padding}
+        {...props}
       >
         {children}
       </Box>

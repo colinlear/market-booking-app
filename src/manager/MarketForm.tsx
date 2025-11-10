@@ -39,7 +39,7 @@ export const MarketForm: FC<{
     onSave(m);
   });
   return (
-    <Stack gap={2} maxWidth="30rem">
+    <Stack gap={4} maxWidth="30rem">
       {!market && (
         <Field.Root
           required
