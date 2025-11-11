@@ -38,7 +38,7 @@ export const StallRoute: FC = () => {
 
   return (
     <>
-      <SubHeader height="4.3rem">
+      <SubHeader height="4.5rem">
         <Heading size="lg" mb={2} display="flex" gap={2} alignItems="center">
           <Box>{stall?.name}</Box>
           <Box flex={1} />

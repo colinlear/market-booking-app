@@ -1,5 +1,3 @@
-import { Auth } from "./Auth";
-
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { BaseUI } from "./routes/baseui";
 import { HomeRoute } from "./routes/home";
@@ -16,60 +14,82 @@ import { StripeRefreshRoute } from "./routes/stripe-refresh";
 import { StallCheckoutRoute } from "./routes/stall-checkout";
 import { StripeSuccessRoute } from "./routes/stripe-success";
 import { StripeCancelRoute } from "./routes/stripe-cancel";
+import { AboutRoute } from "./routes/about";
+import { PrivacyRoute } from "./routes/privacy";
+import { AuthRoute } from "./routes/auth";
 
 const router = createBrowserRouter([
   { path: "", Component: NotFound },
+  {
+    path: "privacy",
+    Component: PrivacyRoute,
+  },
   {
     path: ":marketCode/",
     Component: BaseUI,
     children: [
       {
+        path: "about",
+        Component: AboutRoute,
+      },
+      {
         path: "",
-        Component: HomeRoute,
-      },
-      {
-        path: "manage",
-        Component: ManageRoute,
-      },
-      {
-        path: "stripeConnect/:stripeAccount/return",
-        Component: StripeReturnRoute,
-      },
-      {
-        path: "stripeConnect/:stripeAccount/refresh",
-        Component: StripeRefreshRoute,
-      },
-      {
-        path: "manage/date/:date",
-        Component: ManageDateRoute,
-      },
-      {
-        path: "manage/stalls",
-        Component: ManageStallsRoute,
-      },
-      {
-        path: "stall/add",
-        Component: AddStallRoute,
-      },
-      {
-        path: "stall/:stallId",
-        Component: StallRoute,
-      },
-      {
-        path: "stall/:stallId/edit",
-        Component: EditStallRoute,
-      },
-      {
-        path: "stall/:stallId/checkout",
-        Component: StallCheckoutRoute,
-      },
-      {
-        path: "stall/:stallId/stripe-success",
-        Component: StripeSuccessRoute,
-      },
-      {
-        path: "stall/:stallId/stripe-cancel",
-        Component: StripeCancelRoute,
+        Component: AuthRoute,
+        children: [
+          {
+            path: "",
+            Component: HomeRoute,
+          },
+
+          {
+            path: "privacy",
+            Component: PrivacyRoute,
+          },
+          {
+            path: "manage",
+            Component: ManageRoute,
+          },
+          {
+            path: "stripeConnect/:stripeAccount/return",
+            Component: StripeReturnRoute,
+          },
+          {
+            path: "stripeConnect/:stripeAccount/refresh",
+            Component: StripeRefreshRoute,
+          },
+          {
+            path: "manage/date/:date",
+            Component: ManageDateRoute,
+          },
+          {
+            path: "manage/stalls",
+            Component: ManageStallsRoute,
+          },
+          {
+            path: "stall/add",
+            Component: AddStallRoute,
+          },
+          {
+            path: "stall/:stallId",
+            Component: StallRoute,
+          },
+          {
+            path: "stall/:stallId/edit",
+            Component: EditStallRoute,
+          },
+          {
+            path: "stall/:stallId/checkout",
+            Component: StallCheckoutRoute,
+          },
+          {
+            path: "stall/:stallId/stripe-success",
+            Component: StripeSuccessRoute,
+          },
+          {
+            path: "stall/:stallId/stripe-cancel",
+            Component: StripeCancelRoute,
+          },
+        ],
       },
     ],
   },
@@ -77,10 +97,10 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <Auth>
+    <>
       <RouterProvider router={router} />
       <Toaster />
-    </Auth>
+    </>
   );
 }
 

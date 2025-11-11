@@ -1,8 +1,20 @@
-import { Box, Heading, Stack, Image, HStack } from "@chakra-ui/react";
+import {
+  Box,
+  Heading,
+  Stack,
+  Image,
+  HStack,
+  Avatar,
+  Menu,
+  Portal,
+  IconButton,
+} from "@chakra-ui/react";
 import type { FC } from "react";
 import { NavLink } from "./navlink";
 import { useIsMarketAdmin, useMarket } from "@/MarketContext";
 import { Link } from "react-router";
+import { BsPerson } from "react-icons/bs";
+import { auth } from "@/firebase/firebase";
 
 export const Header: FC = () => {
   const market = useMarket();
@@ -38,6 +50,36 @@ export const Header: FC = () => {
               <Heading size="sm">{market.name}</Heading>
               <Heading size="2xl">Stallholder Portal</Heading>
             </Stack>
+            <Box flex={1} />
+            {!!auth.currentUser && (
+              <Box>
+                <Menu.Root>
+                  <Menu.Trigger asChild>
+                    <IconButton variant="plain">
+                      <Avatar.Root>
+                        <Avatar.Icon>
+                          <BsPerson />
+                        </Avatar.Icon>
+                      </Avatar.Root>
+                    </IconButton>
+                  </Menu.Trigger>
+                  <Portal>
+                    <Menu.Positioner>
+                      <Menu.Content>
+                        <Menu.Item
+                          value="signout"
+                          onClick={() => {
+                            auth.signOut();
+                          }}
+                        >
+                          Sign Out
+                        </Menu.Item>
+                      </Menu.Content>
+                    </Menu.Positioner>
+                  </Portal>
+                </Menu.Root>
+              </Box>
+            )}
           </Stack>
         </Link>
 
@@ -49,7 +91,10 @@ export const Header: FC = () => {
           height="2.5rem"
           alignItems="center"
         >
-          <NavLink to={`/${market.code}`}>{isAdmin ? "Dates" : "Home"}</NavLink>
+          <NavLink to={`/${market.code}`}>
+            {!auth.currentUser ? "Login" : isAdmin ? "Dates" : "Home"}
+          </NavLink>
+          <NavLink to={`/${market.code}/about`}>About</NavLink>
           <Box flex={1} />
           {isAdmin && (
             <>

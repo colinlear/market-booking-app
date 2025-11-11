@@ -1,6 +1,6 @@
 import { Header } from "@/common/header";
 import { MarketProvider } from "@/MarketProvider";
-import { Box } from "@chakra-ui/react/box";
+import { Stack } from "@chakra-ui/react";
 import type { FC } from "react";
 import { Outlet, useParams } from "react-router";
 
@@ -9,9 +9,9 @@ export const BaseUI: FC = () => {
   return (
     <MarketProvider marketCode={marketCode}>
       <Header />
-      <Box marginX={2} marginY={2}>
+      <Stack marginX={2} marginY={2} minHeight="calc(100vh - 9rem)">
         <Outlet />
-      </Box>
+      </Stack>
     </MarketProvider>
   );
 };

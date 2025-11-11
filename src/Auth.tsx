@@ -1,7 +1,8 @@
 import { useEffect, useState, type FC, type PropsWithChildren } from "react";
+import { Link as RouterLink } from "react-router";
 import { auth as authui } from "firebaseui";
 import { EmailAuthProvider, onAuthStateChanged } from "firebase/auth";
-import { Box, ProgressCircle } from "@chakra-ui/react";
+import { Box, HStack, Link, ProgressCircle } from "@chakra-ui/react";
 
 import { auth } from "./firebase/firebase";
 
@@ -46,30 +47,65 @@ export const Auth: FC<PropsWithChildren> = ({ children }) => {
           requireDisplayName: true,
         },
       ],
-      tosUrl: "https://www.vicparkmarket.com.au",
-      privacyPolicyUrl: "https://www.vicparkmarket.com.au",
     });
   }, [isLoading, isSignedIn]);
 
   if (!isSignedIn) {
     return (
       <>
-        <div id="firebaseui-auth-container"></div>
-        <div id="loader" className="text-center">
-          <Box
-            display="flex"
-            justifyContent="center"
-            alignItems="center"
-            height="75vh"
+        <Box flex={1} smDown={{ flex: 0 }} />
+        <Box>
+          <Box id="firebaseui-auth-container"></Box>
+          <div id="loader" className="text-center">
+            <Box
+              display="flex"
+              justifyContent="center"
+              alignItems="center"
+              height="75vh"
+            >
+              <ProgressCircle.Root size="xl" colorPalette="green">
+                <ProgressCircle.Circle>
+                  <ProgressCircle.Track />
+                  <ProgressCircle.Range strokeLinecap="round" />
+                </ProgressCircle.Circle>
+              </ProgressCircle.Root>
+            </Box>
+          </div>
+        </Box>
+        <Box flex={3} />
+        <HStack
+          flex={0}
+          width="100%"
+          px={2}
+          bgColor="white"
+          color="black"
+          alignItems="flex-start"
+        >
+          <HStack
+            smDown={{
+              flexDirection: "column",
+              alignItems: "flex-start",
+              gap: "1px",
+            }}
           >
-            <ProgressCircle.Root size="xl" colorPalette="green">
-              <ProgressCircle.Circle>
-                <ProgressCircle.Track />
-                <ProgressCircle.Range strokeLinecap="round" />
-              </ProgressCircle.Circle>
-            </ProgressCircle.Root>
-          </Box>
-        </div>
+            <Box>
+              &copy;2025{" "}
+              <Link
+                variant="underline"
+                href="https://helppo.au"
+                target="_blank"
+              >
+                Helppo Solutions
+              </Link>
+              .
+            </Box>
+            <Box>All rights reserved</Box>
+          </HStack>
+          <Box flex={1} />
+          <Link variant="underline" asChild>
+            <RouterLink to="/privacy">Privacy Policy</RouterLink>
+          </Link>
+        </HStack>
       </>
     );
   }

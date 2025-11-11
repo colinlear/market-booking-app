@@ -58,8 +58,8 @@ export const ManageMarketDates: FC = () => {
                 </Box>
                 {groupDates[month].map((dt) => (
                   <HStack
+                    key={dt.toLocaleDateString()}
                     marginBottom={2}
-                    marginX={2}
                     borderRadius={6}
                     backgroundColor="rgba(69, 125, 21, 0.1)"
                     p={2}
@@ -73,8 +73,8 @@ export const ManageMarketDates: FC = () => {
                       navigate(
                         `/${market.code}/manage/date/${format(
                           dt,
-                          "yyyy-MM-dd",
-                        )}`,
+                          "yyyy-MM-dd"
+                        )}`
                       );
                     }}
                   >
@@ -83,7 +83,7 @@ export const ManageMarketDates: FC = () => {
                   </HStack>
                 ))}
               </Box>
-            ),
+            )
         )}
       <BottomBar>
         <AddDatesDialog
@@ -108,7 +108,7 @@ export const AddDatesDialog: FC<{
   const [weekday, setWeekday] = useState("0");
   const [startDate, setStartDate] = useState(format(new Date(), "yyyy-MM-dd"));
   const [endDate, setEndDate] = useState(
-    format(addMonths(new Date(), 1), "yyyy-MM-dd"),
+    format(addMonths(new Date(), 1), "yyyy-MM-dd")
   );
 
   return (
