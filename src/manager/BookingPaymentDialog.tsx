@@ -92,10 +92,6 @@ export const BookingPaymentDialog: FC<{
                     {new Date(booking.date).toLocaleDateString()}
                   </Box>
                 </Box>
-                <Box>
-                  Invoice will be emailed to:{" "}
-                  <Box fontWeight={900}>{booking.stall.email}</Box>
-                </Box>
               </Stack>
             </Dialog.Body>
             <Dialog.Footer>
@@ -118,7 +114,7 @@ export const BookingPaymentDialog: FC<{
                   e.stopPropagation();
                 }}
               >
-                Send Invoice
+                Record Payment
               </Button>
             </Dialog.Footer>
             <Dialog.CloseTrigger asChild>

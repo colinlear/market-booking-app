@@ -22,7 +22,7 @@ export interface StripeStatusResponse {
   account: string;
   name: string;
   status: string;
-  enabled: boolean;
+  payments: boolean;
 }
 
 export const stripeAccountStatus = async (account: string) => {

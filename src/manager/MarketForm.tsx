@@ -203,7 +203,7 @@ export const MarketForm: FC<{
         </Field.HelperText>
       </Field.Root>
       <StripeAccountStatus account={market?.stripeAccount} />
-      <Field.Root invalid={admins.includes(newAdmin.trim())}>
+      <Field.Root mt={5} invalid={admins.includes(newAdmin.trim())}>
         <Field.Label>Administrators</Field.Label>
         <Stack pl={2} width="100%">
           {admins.sort().map((p) => (

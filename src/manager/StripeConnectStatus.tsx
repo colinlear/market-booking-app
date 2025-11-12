@@ -1,5 +1,5 @@
 import { stripeAccountStatus, type StripeStatusResponse } from "@/stripe";
-import { Box, HStack, Button, Spinner } from "@chakra-ui/react";
+import { Box, HStack, Button, Spinner, Link } from "@chakra-ui/react";
 import { useEffect, useState, type FC } from "react";
 import { StripeConnectButton } from "./StripeConnectButton";
 import { useNavigate } from "react-router";
@@ -17,7 +17,7 @@ export const StripeAccountStatus: FC<{ account?: string }> = ({ account }) => {
         .then((s) => setStatus(s))
         .finally(() => setLoading(false));
     }
-  });
+  }, [account]);
 
   if (loading) {
     return (
@@ -51,26 +51,36 @@ export const StripeAccountStatus: FC<{ account?: string }> = ({ account }) => {
 
   return (
     <>
-      {status?.enabled && status.status === "active" ? (
-        <HStack
-          paddingX={4}
-          paddingY={2}
-          border="1px solid grey"
-          justifyContent="space-between"
-          alignItems="center"
-          fontWeight="700"
-        >
-          <Box>Online Payments are configured</Box>
-          <Button
-            colorPalette="red"
-            variant="solid"
-            onClick={() =>
-              navigate(`/${market.code}/stripeConnect/${account}/refresh`)
-            }
+      {status?.payments && status.status === "active" ? (
+        <Box paddingX={4} paddingY={2} border="1px solid grey">
+          <HStack
+            justifyContent="space-between"
+            alignItems="center"
+            fontWeight="700"
           >
-            Refresh
-          </Button>
-        </HStack>
+            <Box>Online Payments are configured</Box>
+            <Button
+              colorPalette="red"
+              variant="solid"
+              onClick={() =>
+                navigate(`/${market.code}/stripeConnect/${account}/refresh`)
+              }
+            >
+              Refresh
+            </Button>
+          </HStack>
+          <Box fontSize="sm" mt={2}>
+            To send customer receipts, goto:{" "}
+            <Link
+              variant="underline"
+              target="_blank"
+              href={`https://dashboard.stripe.com/${account}/settings/emails`}
+            >
+              Stripe Email Settings
+            </Link>{" "}
+            and enable: "Payments - Successful Payments"
+          </Box>
+        </Box>
       ) : (
         <HStack
           paddingX={4}
