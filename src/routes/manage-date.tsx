@@ -88,49 +88,51 @@ export const ManageDateRoute: FC = () => {
         </HStack>
       </SubHeader>
       <Stack gap={2}>
-        <Box
-          bgColor="yellow.300"
-          fontStyle="italic"
-          fontSize={12}
-          fontWeight={600}
-          maxWidth="30rem"
-          _dark={{
-            bgColor: "orange.500",
-          }}
-          borderRadius={6}
-          padding={2}
-          mb={2}
-        >
-          {power > 0 && (
-            <Box m={2}>
-              <Icon size="lg" pr={2}>
-                <BsLightningChargeFill />
-              </Icon>{" "}
-              {power} Bookings Require Power
-            </Box>
-          )}
-          {tents > 0 && (
-            <Box m={2}>
-              <Icon size="lg" pr={2}>
-                <PiTent />
-              </Icon>{" "}
-              {tents} Tents Required
-            </Box>
-          )}
-        </Box>
+        {(power > 0 || tents > 0) && (
+          <Box
+            bgColor="yellow.300"
+            fontStyle="italic"
+            fontSize={12}
+            fontWeight={600}
+            maxWidth="30rem"
+            _dark={{
+              bgColor: "orange.500",
+            }}
+            borderRadius={6}
+            mb={2}
+          >
+            {power > 0 && (
+              <Box my={1} mx={2}>
+                <Icon size="lg" pr={2}>
+                  <BsLightningChargeFill />
+                </Icon>{" "}
+                {power} Bookings Require Power
+              </Box>
+            )}
+            {tents > 0 && (
+              <Box my={1} mx={2}>
+                <Icon size="lg" pr={2}>
+                  <PiTent />
+                </Icon>{" "}
+                {tents} Tents Required
+              </Box>
+            )}
+          </Box>
+        )}
         {!loading && !filteredBookings?.length && (
           <Box fontStyle="italic" fontSize={12}>
             No Bookings
           </Box>
         )}
-
-        {filteredBookings?.map((booking) => (
-          <BookingRow
-            key={booking.id}
-            booking={booking}
-            reload={() => reloadBookings()}
-          />
-        ))}
+        <Box>
+          {filteredBookings?.map((booking) => (
+            <BookingRow
+              key={booking.id}
+              booking={booking}
+              reload={() => reloadBookings()}
+            />
+          ))}
+        </Box>
         <Box height={20} />
         <DeleteMarketButton
           date={format(dt, "yyyy-MM-dd")}

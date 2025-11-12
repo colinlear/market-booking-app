@@ -5,7 +5,10 @@ import {
   Heading,
   HStack,
   Icon,
+  IconButton,
   Link,
+  LinkBox,
+  LinkOverlay,
   Separator,
   Stack,
   Tag,
@@ -20,7 +23,6 @@ import { BsLightningChargeFill } from "react-icons/bs";
 import { Tooltip } from "@/components/ui/tooltip";
 import { PiTent } from "react-icons/pi";
 import { LuMail, LuPhone } from "react-icons/lu";
-import { PhoneNumber } from "@/common/phone-number";
 
 export const BookingRow: FC<{
   booking: BookingWithStall;
@@ -34,13 +36,19 @@ export const BookingRow: FC<{
 
   return (
     <>
-      <Stack maxWidth="30rem">
+      <LinkBox
+        as={Stack}
+        maxWidth="30rem"
+        gap={1}
+        _hover={{ bgColor: "#00000020" }}
+        p={2}
+      >
         <HStack gap={2} alignItems="center">
-          <Link asChild>
+          <LinkOverlay asChild>
             <RouterLink to={`/${market.code}/stall/${booking.stall.id}`}>
               <Heading size="md">{booking.stall.name}</Heading>
             </RouterLink>
-          </Link>
+          </LinkOverlay>
           <Box flex={1} />
           <Box>
             {booking.stallStatus?.size}
@@ -51,7 +59,7 @@ export const BookingRow: FC<{
                 </Icon>
               </Tooltip>
             )}
-            {booking.requiresTent && (
+            {!!booking.requiresTent && (
               <Tooltip
                 content={
                   booking.requiresTent > 1
@@ -94,41 +102,27 @@ export const BookingRow: FC<{
           </Box>
         </HStack>
         {!!booking.stallStatus?.notes?.trim() && (
-          <Box whiteSpace="pre-wrap" mb={2} fontSize="90%">
+          <Box whiteSpace="pre-wrap" fontSize="sm" px={2}>
             {booking.stallStatus?.notes}
           </Box>
         )}
-        <HStack gap={2} justifyContent="space-between" marginBottom={4}>
+        <HStack gap={4}>
           {!!booking.stall.email?.trim() && (
-            <Link
-              variant="underline"
-              colorPalette="blue"
-              href={`mailto:${booking.stall.email}`}
-              onClick={(e) => e.stopPropagation()}
-              fontSize="80%"
-            >
-              <Icon>
+            <IconButton size="xs" colorPalette="blue" variant="solid" asChild>
+              <Link href={`mailto:${booking.stall.email}`} rounded="full">
                 <LuMail />
-              </Icon>
-              {booking.stall.email}
-            </Link>
+              </Link>
+            </IconButton>
           )}
           {!!booking.stall.phone?.trim() && (
-            <Link
-              variant="underline"
-              colorPalette="blue"
-              href={`tel:${booking.stall.phone}`}
-              onClick={(e) => e.stopPropagation()}
-              fontSize="80%"
-            >
-              <Icon>
-                <LuPhone />
-              </Icon>
-              <PhoneNumber phone={booking.stall.phone} />
-            </Link>
+            <IconButton size="xs" colorPalette="green" variant="solid" asChild>
+              <Link href={`tel:${booking.stall.phone}`} rounded="full">
+                <LuPhone color="white" />
+              </Link>
+            </IconButton>
           )}
-        </HStack>
-        <HStack justifyContent="flex-end" gap={2}>
+
+          <Box flex={1} />
           {booking.status == "booked" && (
             <Button
               size="xs"
@@ -168,8 +162,8 @@ export const BookingRow: FC<{
               </Box>
             )}
         </HStack>
-      </Stack>
-      <Separator marginBottom={4} marginTop={2} maxWidth="30rem" />
+      </LinkBox>
+      <Separator marginY={2} maxWidth="30rem" />
     </>
   );
 };
