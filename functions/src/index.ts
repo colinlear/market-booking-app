@@ -12,6 +12,7 @@ import { stripePaymentFunction } from "./stripePayment";
 import { stripeCallbackFunction } from "./stripeCallback";
 import { stripeConnectFunction } from "./stripeConnect";
 import { stripeAccountFunction } from "./stripeAccount";
+import { stripeStatusFunction } from "./stripeStatus";
 
 // Start writing functions
 // https://firebase.google.com/docs/functions/typescript
@@ -32,3 +33,4 @@ export const stripePayment = stripePaymentFunction;
 export const stripeCallback = stripeCallbackFunction;
 export const stripeAccount = stripeAccountFunction;
 export const stripeConnect = stripeConnectFunction;
+export const stripeStatus = stripeStatusFunction;

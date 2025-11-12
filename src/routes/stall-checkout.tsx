@@ -31,7 +31,7 @@ export const StallCheckoutRoute: FC = () => {
   const { stallStatus, loading: stallStatusLoading } = useStallStatus(stallId!);
 
   const { unpaidBookings, creditedBookings, loading } = useBookingList(
-    stallId!,
+    stallId!
   );
 
   if (loading || stallStatusLoading || stallLoading) return <LoadingPage />;
@@ -73,17 +73,17 @@ export const StallCheckoutBookings: FC<{
   bookingCost?: number;
 }> = ({ stall, unpaidBookings, creditedBookings, bookingCost }) => {
   const market = useMarket();
-  const [selected, setSelected] = useState(unpaidBookings);
+  const [selected, setSelected] = useState([...unpaidBookings]);
   const { checkout, loading } = useCheckout(market, stall);
 
   const selectedIds = useMemo(
     () => new Set(selected.map((b) => b.id)),
-    [selected],
+    [selected]
   );
   const payCount = useMemo(() => [...selected].length, [selected]);
   const useCredits = useMemo(
     () => Math.min(payCount, creditedBookings.length),
-    [payCount, creditedBookings],
+    [payCount, creditedBookings]
   );
   const cost = bookingCost ?? 0;
 
@@ -125,7 +125,7 @@ export const StallCheckoutBookings: FC<{
             selected={selectedIds.has(b.id)}
             onSelect={() =>
               setSelected((s) =>
-                s.includes(b) ? [...s].filter((a) => a != b) : [...s, b],
+                s.includes(b) ? [...s].filter((a) => a != b) : [...s, b]
               )
             }
           />

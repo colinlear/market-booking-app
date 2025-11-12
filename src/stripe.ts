@@ -8,10 +8,32 @@ export const stripeAccountSetup = async () => {
   const functions = getFunctions();
   const stripeAccount = httpsCallable<never, StripeAccountResponse>(
     functions,
-    "stripeAccount",
+    "stripeAccount"
   );
   const result = await stripeAccount();
   return result.data.account;
+};
+
+export interface StripeStatusRequest {
+  account: string;
+}
+
+export interface StripeStatusResponse {
+  account: string;
+  name: string;
+  status: string;
+  enabled: boolean;
+}
+
+export const stripeAccountStatus = async (account: string) => {
+  const functions = getFunctions();
+  const stripeStatus = httpsCallable<StripeStatusRequest, StripeStatusResponse>(
+    functions,
+    "stripeStatus"
+  );
+  const result = await stripeStatus({ account });
+  console.debug("Account", result.data);
+  return result.data;
 };
 
 export interface StripeConnectRequest {
@@ -26,7 +48,7 @@ export interface StripeConnectResponse {
 
 export const stripeConnectSetup = async (
   marketCode: string,
-  account: string,
+  account: string
 ) => {
   const functions = getFunctions();
 
@@ -59,7 +81,7 @@ export interface StripePaymentResponse {
 export const stripeCheckout = async (
   marketCode: string,
   stall: string,
-  bookings: string[],
+  bookings: string[]
 ) => {
   const functions = getFunctions();
   const stripePayment = httpsCallable<

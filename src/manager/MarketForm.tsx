@@ -17,14 +17,12 @@ import { useEditMarket } from "./useEditMarket";
 import { LuMinus, LuPlus } from "react-icons/lu";
 import { BottomBar } from "@/common/bottom-bar";
 import { GoDot, GoPlus } from "react-icons/go";
-// import { StripeConnectButton } from "./StripeConnectButton";
-import { useNavigate } from "react-router";
+import { StripeAccountStatus } from "./StripeConnectStatus";
 
 export const MarketForm: FC<{
   market?: Market;
   onSave: (market: Market) => void;
 }> = ({ market, onSave }) => {
-  const navigate = useNavigate();
   const [code, setCode] = useState(market?.code ?? "");
   const [name, setName] = useState(market?.name ?? "");
   const [description, setDesc] = useState(market?.description ?? "");
@@ -204,34 +202,7 @@ export const MarketForm: FC<{
           The cost to rent a gazebo from the market. O to disable.
         </Field.HelperText>
       </Field.Root>
-      {market?.stripeAccount?.trim() ? (
-        <HStack
-          paddingX={4}
-          paddingY={2}
-          border="1px solid grey"
-          justifyContent="space-between"
-          alignItems="center"
-          fontWeight="700"
-        >
-          <Box>Online Payments are configured</Box>
-          <Button
-            colorPalette="red"
-            variant="solid"
-            onClick={() =>
-              navigate(
-                `/${market.code}/stripeConnect/${market.stripeAccount}/refresh`
-              )
-            }
-          >
-            Refresh
-          </Button>
-        </HStack>
-      ) : (
-        <Box>
-          Online Payments are disabled.
-          {/* <StripeConnectButton /> */}
-        </Box>
-      )}
+      <StripeAccountStatus account={market?.stripeAccount} />
       <Field.Root invalid={admins.includes(newAdmin.trim())}>
         <Field.Label>Administrators</Field.Label>
         <Stack pl={2} width="100%">
