@@ -15,10 +15,13 @@ import { useIsMarketAdmin, useMarket } from "@/MarketContext";
 import { Link } from "react-router";
 import { BsPerson } from "react-icons/bs";
 import { auth } from "@/firebase/firebase";
+import { useDocumentTitle } from "usehooks-ts";
 
 export const Header: FC = () => {
   const market = useMarket();
   const isAdmin = useIsMarketAdmin();
+  useDocumentTitle(`Book - ${market.name}`);
+
   return (
     <>
       <Box
