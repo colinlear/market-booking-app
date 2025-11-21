@@ -171,6 +171,7 @@ export const StallForm: FC<{
               readOnly={!canEditStall}
             />
           </InputGroup>
+          <Field.HelperText>Press return or '+' to add.</Field.HelperText>
         </Field.Root>
 
         <Field.Root>

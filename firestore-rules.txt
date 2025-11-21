@@ -48,7 +48,7 @@ service cloud.firestore {
     }
 
 		match /bookings/{booking} {
-      allow read: if isMarketAdmin(resource.data.marketCode) || isStallAdmin(resource.data.stall.id);
+      allow read: if true;
       allow create: if isMarketAdmin(request.resource.data.marketCode) || isStallAdmin(request.resource.data.stall.id);
       allow update: if isMarketAdmin(resource.data.marketCode) || isStallAdmin(resource.data.stall.id);
       allow delete: if isMarketAdmin(resource.data.marketCode) || isStallAdmin(resource.data.stall.id);

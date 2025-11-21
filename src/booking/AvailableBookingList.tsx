@@ -11,6 +11,7 @@ import { useBookingList } from "./useBookingList";
 import { format } from "date-fns";
 import { useNavigate } from "react-router";
 import { useIsMarketAdmin, useMarket } from "@/MarketContext";
+import { BookingRestrictionsDialog } from "./BookingRestrictionsDialog";
 
 export const AvailableBookingList: FC<{
   stall: Stall;
@@ -144,8 +145,18 @@ export const BookingDate: FC<{
   reload: () => void;
   canEdit?: boolean;
 }> = ({ stall, stallStatus, date, booking, reload, canEdit = true }) => {
-  const { addBooking, loading: addLoading } = useAddBooking(() => reload());
-  const { rebook, loading: rebookLoading } = useRebook(booking, () => reload());
+  const {
+    addBooking,
+    loading: addLoading,
+    requiresConfirm,
+    cancelAddBooking,
+  } = useAddBooking(() => reload());
+  const {
+    rebook,
+    loading: rebookLoading,
+    requiresConfirmRebook,
+    cancelRebook,
+  } = useRebook(stall, stallStatus, booking, () => reload());
   const { cancelBooking, loading: cancelLoading } = useCancelBooking(() =>
     reload()
   );
@@ -156,6 +167,12 @@ export const BookingDate: FC<{
         <Box flex="0 0 6rem">{format(new Date(date), "ccc do")}</Box>
         <Box flex={1} display="flex"></Box>
         <Box flex="0 0 5rem" display="flex" justifyContent="flex-end">
+          <BookingRestrictionsDialog
+            restrictions={requiresConfirm}
+            onBookAnyway={() => addBooking(stall, stallStatus, date, false)}
+            onCancel={() => cancelAddBooking()}
+            loading={addLoading}
+          />
           <Button
             colorPalette="teal"
             variant="solid"
@@ -237,16 +254,25 @@ export const BookingDate: FC<{
       </Box>
       <Box flex="0 0 5rem" display="flex" justifyContent="flex-end">
         {canEdit && (
-          <Button
-            colorPalette="teal"
-            variant="solid"
-            loading={rebookLoading}
-            onClick={() => {
-              rebook();
-            }}
-          >
-            Book
-          </Button>
+          <>
+            <BookingRestrictionsDialog
+              restrictions={requiresConfirmRebook}
+              onBookAnyway={() => rebook(false)}
+              onCancel={() => cancelRebook()}
+              loading={rebookLoading}
+            />
+
+            <Button
+              colorPalette="teal"
+              variant="solid"
+              loading={rebookLoading}
+              onClick={() => {
+                rebook();
+              }}
+            >
+              Book
+            </Button>
+          </>
         )}
       </Box>
     </Stack>

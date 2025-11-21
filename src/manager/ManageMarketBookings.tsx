@@ -23,19 +23,31 @@ import { BsLightningChargeFill } from "react-icons/bs";
 import { Tooltip } from "@/components/ui/tooltip";
 import { PiTent } from "react-icons/pi";
 import { LuMail, LuPhone } from "react-icons/lu";
+import { BookingRestrictionsDialog } from "@/booking/BookingRestrictionsDialog";
 
 export const BookingRow: FC<{
   booking: BookingWithStall;
   reload: () => void;
 }> = ({ booking, reload }) => {
   const market = useMarket();
-  const { rebook, loading: rebookLoading } = useRebook(booking, () => reload());
+  const {
+    rebook,
+    loading: rebookLoading,
+    requiresConfirmRebook,
+    cancelRebook,
+  } = useRebook(booking.stall, booking.stallStatus, booking, () => reload());
   const { cancelBooking, loading: cancelLoading } = useCancelBooking(() =>
     reload()
   );
 
   return (
     <>
+      <BookingRestrictionsDialog
+        restrictions={requiresConfirmRebook}
+        onBookAnyway={() => rebook(false)}
+        onCancel={() => cancelRebook()}
+        loading={rebookLoading}
+      />
       <LinkBox
         as={Stack}
         maxWidth="30rem"

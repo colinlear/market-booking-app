@@ -5,6 +5,8 @@ export interface Market {
   logo: string;
   dates: string[];
   admins: string[];
+  productQuotas?: Record<string, number>;
+  enforceQuotas?: boolean;
   stallCost: number;
   tentCost?: number;
   powerCost?: number;
@@ -56,6 +58,8 @@ export interface Booking {
   stall: {
     id: string;
     name: string;
+    description?: string;
+    products?: string[];
   };
   date: string;
   cost: number;

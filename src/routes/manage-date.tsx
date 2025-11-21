@@ -17,7 +17,7 @@ import { format } from "date-fns";
 import { useMemo, useState, type FC } from "react";
 import { useNavigate, useParams } from "react-router";
 import { SelectStallsDialog } from "../stall/SelectStallsDialog";
-import { createBooking, getBooking } from "@/firebase/booking";
+import { createBooking, getBooking, updateBooking } from "@/firebase/booking";
 import { getStallStatus } from "@/firebase/stall-status";
 import { ExportBookingsDialog } from "@/booking/ExportBookings";
 import type { StatusFilter } from "@/manager/ManageMarketStalls";
@@ -149,19 +149,27 @@ export const ManageDateRoute: FC = () => {
               if (!approval) return;
               const existing = await getBooking(market.code, stall.id, date);
               if (existing) {
-                createBooking({
-                  marketCode: existing.marketCode,
+                updateBooking(existing.id, {
                   status: "booked",
-                  cost: existing.cost,
-                  stall: existing.stall,
-                  date: existing.date,
+                  stall: {
+                    id: stall.id,
+                    name: stall.name,
+                    description: stall.description,
+                    products: stall.products,
+                  },
+                  cost: approval.bookingCost,
                   isPaid: existing.status == "credited",
                 });
               } else {
                 createBooking({
                   marketCode: market.code,
                   status: "booked",
-                  stall,
+                  stall: {
+                    id: stall.id,
+                    name: stall.name,
+                    description: stall.description,
+                    products: stall.products,
+                  },
                   date,
                   cost: approval.bookingCost,
                   isPaid: false,
